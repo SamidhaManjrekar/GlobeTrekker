@@ -11,7 +11,7 @@ export const exploreData = [
       alt: 'Explore Destination 1',
       title: 'Cultural Immersions',
       description: 'Dive deep into local cultures and traditions around the world.',
-      link: '#',
+      link: '/blog/1',
     },
     {
       id: 2,
@@ -19,7 +19,7 @@ export const exploreData = [
       alt: 'Explore Destination 2',
       title: 'Adventure Travel',
       description: 'Experience thrilling adventures from hiking to water sports.',
-      link: '#',
+      link: '/blog/2',
     },
     {
       id: 3,
@@ -27,7 +27,7 @@ export const exploreData = [
       alt: 'Explore Destination 3',
       title: 'Family Trips',
       description: 'Find the best destinations and activities for family travel.',
-      link: '#',
+      link: '/blog/3',
     },
     {
       id: 4,
@@ -35,7 +35,7 @@ export const exploreData = [
       alt: 'Explore Destination 4',
       title: 'Luxury Escapes',
       description: 'Indulge in luxury getaways at the world\'s most opulent resorts.',
-      link: '#',
+      link: '/blog/4',
     },
     {
       id: 5,
@@ -43,6 +43,6 @@ export const exploreData = [
       alt: 'Explore Destination 5',
       title: 'Nature Retreats',
       description: 'Rejuvenate amidst serene landscapes and tranquil surroundings.',
-      link: '#', 
+      link: '/blog/5',
     },
   ];

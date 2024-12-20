@@ -1,59 +1,57 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
+import { Button } from "./ui/button";
+import { Link, useLocation } from "react-router-dom"; 
+import { navData, homeNavData } from "@/data/navData"; 
 
 export const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation(); 
+  const currentLinks = location.pathname === '/' ? navData : homeNavData;
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > window.innerHeight / 8) {
+      if (window.scrollY > window.innerHeight / 12) {
         setScrolled(true);
       } else {
         setScrolled(false);
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
   return (
     <header
       className={`fixed top-0 left-0 w-full z-10 transition-colors duration-300 ${
-        scrolled ? 'bg-black' : 'bg-transparent'
+        scrolled ? "bg-black" : "bg-transparent"
       }`}
       id="header"
     >
-      <nav className="p-5 flex justify-between items-center">
-        <a
-          href="#"
-          className="font-montserrat font-semibold text-lg"
-        >
+      <nav className="p-3 px-10 flex justify-between items-center">
+        <a href="#" className="font-montserrat font-semibold text-lg">
           Globe Trekker
         </a>
         <div>
-          <ul className="flex gap-8">
-            <li>
-              <a href="#home" className='hover:text-[var(--clr-text-light)]'>
-                Home
-              </a>
-            </li>
-            <li>
-              <a href="#about" className='hover:text-[var(--clr-text-light)]'>
-                About
-              </a>
-            </li>
-            <li>
-              <a href="#popular" className='hover:text-[var(--clr-text-light)]'>
-                Popular
-              </a>
-            </li>
-            <li>
-              <a href="#explore" className='hover:text-[var(--clr-text-light)]'>
-                Explore
-              </a>
-            </li>
+          <ul className="flex gap-8 items-center">
+            {currentLinks.map((link, index) => (
+              <li key={index}>
+                {link.isButton ? (
+                  <Link to={link.href}>
+                    <Button variant="gold">{link.name}</Button>
+                  </Link>
+                ) : (
+                  <a
+                    href={link.href}
+                    className="hover:text-[var(--clr-text-light)]"
+                  >
+                    {link.name}
+                  </a>
+                )}
+              </li>
+            ))}
           </ul>
         </div>
       </nav>
