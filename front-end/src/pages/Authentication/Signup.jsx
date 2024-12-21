@@ -1,10 +1,20 @@
 import React from "react";
 import { z } from "zod";
 import Auth from "../../components/auth/auth";
+import { useNavigate } from "react-router-dom";
+import api from "@/api/interceptor";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "@/constants/access";
 
 const Signup = () => {
-  const handleSignUp = (data) => {
+  const navigate = useNavigate();
+  const handleSignUp = async (data) => {
     console.log("Signup Data:", data);
+    try {
+      const res = await api.post("/api/signup/", data);
+      navigate("/signin");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
   const formFields = [
@@ -16,6 +26,18 @@ const Signup = () => {
         .string()
         .min(1, "Name is required")
         .regex(/^[a-zA-Z\s]+$/, "Name can only contain letters and spaces"),
+    },
+    {
+      name: "username",
+      type: "text",
+      placeholder: "Enter your username",
+      validation: z
+        .string()
+        .min(3, "Username must be at least 3 characters")
+        .regex(
+          /^[a-zA-Z0-9_.-]+$/,
+          "Username can only contain letters, numbers, underscores, hyphens, and periods"
+        ),
     },
     {
       name: "email",
@@ -39,8 +61,8 @@ const Signup = () => {
       onSubmit={handleSignUp}
       buttonText="Sign Up"
       footerText="Already have an account?"
-      footerButton="Signin"
-      footerLink='/signin'
+      footerButton="Sign in"
+      footerLink="/signin"
     />
   );
 };

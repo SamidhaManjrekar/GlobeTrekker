@@ -40,7 +40,7 @@ const Auth = ({
   });
 
   return (
-    <div className="flex justify-center items-center h-screen ">
+    <div className="flex justify-center items-center h-screen">
       <Card className="w-full max-w-md border-2 border-gold">
         <CardHeader>
           <CardTitle className="text-center">{formTitle}</CardTitle>
@@ -70,12 +70,12 @@ const Auth = ({
           </CardContent>
           <CardFooter className="flex flex-col space-y-2">
             <Button variant="gold" className="w-full" type="submit">
-              <Link to="/home" className="w-full h-full flex justify-center items-center">
-                {buttonText}
-              </Link>
+              {buttonText}
             </Button>
-            <div className="flex items-center">
-              {footerText && ( <p className="text-center text-sm">{footerText}</p> )}
+            <div className="flex items-center justify-center">
+              {footerText && (
+                <p className="text-center text-sm">{footerText}</p>
+              )}
               <Link to={footerLink}>
                 <Button variant="link" className="pl-2">
                   {footerButton}
