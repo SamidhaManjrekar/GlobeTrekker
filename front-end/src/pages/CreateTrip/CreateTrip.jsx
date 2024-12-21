@@ -1,12 +1,12 @@
-import { Navbar } from "@/components/Navbar";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
+import { CalendarIcon } from "lucide-react";
 import {
   Form,
   FormField,
@@ -16,14 +16,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Textarea } from "@/components/ui/textarea";
-import { useNavigate } from "react-router-dom";
+import { Calendar } from "@/components/ui/calendar";
 
 const tripSchema = z.object({
   numberOfAdults: z.number().min(0, "Must be a positive number").default(1),
@@ -39,6 +39,9 @@ const tripSchema = z.object({
 });
 
 const CreateTrip = () => {
+  const [isSignedIn, setIsSignedIn] = useState(
+    !!(localStorage.getItem("access") && localStorage.getItem("refresh"))
+  );
   const navigate = useNavigate();
 
   const form = useForm({
@@ -56,11 +59,17 @@ const CreateTrip = () => {
   });
 
   const onSubmit = async (data) => {
-    try {
-      navigate('/show-trip', { state: { data } });
-    } catch (error) {
-      console.error("Error generating trip:", error);
+    if (isSignedIn) {
+      navigate("/show-trip", { state: { data } });
+    } else {
+      localStorage.setItem("CreateTrip", JSON.stringify(data));
+      navigate("/signin");
     }
+  };
+
+  const handleSignInSuccess = () => {
+    setIsSignedIn(true);
+    navigate("/show-trip", { state: { data: form.getValues() } });
   };
 
   return (
@@ -68,14 +77,11 @@ const CreateTrip = () => {
       <Navbar />
       <div className="p-14 mt-8 max-w-3xl mx-auto space-y-6">
         <h1 className="text-3xl font-bold text-center">Plan Your Dream Vacation</h1>
-        <p className="text-center text-lg">
-          Tell us a little about your choices
-        </p>
+        <p className="text-center text-lg">Tell us a little about your choices</p>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex gap-10">
-              {" "}
               <div className="w-1/2">
                 <FormField
                   control={form.control}
@@ -187,7 +193,6 @@ const CreateTrip = () => {
 
             <div className="flex gap-10">
               <div className="w-1/2">
-                {" "}
                 <FormField
                   control={form.control}
                   name="departureDate"
@@ -289,7 +294,7 @@ const CreateTrip = () => {
 
             <div className="flex justify-center align-middle">
               <Button type="submit" variant="gold" className="px-8">
-                Generate Trip
+                Plan Trip
               </Button>
             </div>
           </form>

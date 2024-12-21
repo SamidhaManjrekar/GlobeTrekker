@@ -13,7 +13,14 @@ const Signin = () => {
       const res = await api.post("/api/signin/", data);
       localStorage.setItem(ACCESS_TOKEN, res.data.access);
       localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-      navigate("/home");
+      if (localStorage.getItem("CreateTrip").length === 0) {
+        navigate("/home");
+      }
+      else{
+        const data = JSON.parse(localStorage.getItem("CreateTrip"));
+        localStorage.removeItem("CreateTrip");
+        navigate("/show-trip", { state: { data } });
+      }
     } catch (error) {
       console.error("Login failed:", error);
     }

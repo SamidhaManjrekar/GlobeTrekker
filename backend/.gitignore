@@ -1,0 +1,72 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+venv/
+ENV/
+env.bak/
+*.egg-info/
+*.egg
+dist/
+build/
+*.whl
+
+# Logs
+*.log
+*.out
+*.err
+logs/
+
+# Database files
+*.sqlite3
+
+# Security
+.env
+*.pem
+*.key
+
+# Django specific
+db.sqlite3
+media/
+staticfiles/
+
+# IDE files
+.idea/
+*.swp
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Test output
+coverage/
+*.cover
+htmlcov/
+nosetests.xml
+*.coveragerc
+.cache
+.pytest_cache/
+*.pytest_cache
+
+# Migrations
+*/migrations/*.py
+*/migrations/*.pyc
+
+# Docker
+*.env
+.dockerignore
+
+# Other
+*.bak
+*.tmp
