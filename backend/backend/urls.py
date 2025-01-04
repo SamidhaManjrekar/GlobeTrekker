@@ -8,10 +8,12 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/signup/', CreateUserView.as_view(), name='register'),
-    path("api/signin/", TokenObtainPairView.as_view(), name='get_token'),
+    path('api/signin/', TokenObtainPairView.as_view(), name='get_token'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='refresh'),
-    path("api-auth/", include("rest_framework.urls")),
-    path('blogs/', include('blog.urls')), 
+    path('api-auth/', include("rest_framework.urls")),
+    path('api/', include('api.urls')),
+    path('api/', include('itinerary.urls')),
+    path('api/', include('blog.urls')), 
 ] 
 
 if settings.DEBUG:

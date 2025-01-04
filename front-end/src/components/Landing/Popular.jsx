@@ -8,7 +8,7 @@ const Popular = () => {
       className="p-16 mt-10 md:text-start flex flex-col gap-5 items-center"
       id="popular"
     >
-      <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl mb-4">
+      <h2 className="text-lg font-medium sm:text-xl md:text-2xl lg:text-3xl mb-4">
         Popular Destinations Loved by Travelers
       </h2>
       <p className="text-sm md:text-base max-w-[80ch] m-auto text-center mb-8">

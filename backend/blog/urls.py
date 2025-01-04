@@ -2,7 +2,9 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('top_blogs/', views.top_blogs, name='top_blogs'),  
-    path('all_blogs/', views.all_blogs, name='all_blogs'), 
-    path('blog_content/<int:pk>/', views.blog_content, name='blog_content'),  
+    path('your-blogs/', views.BlogListCreateView.as_view(), name='blog-list-create'),
+    path('blogs/<int:pk>/', views.BlogDetailView.as_view(), name='blog-detail'),
+    path('tags/', views.TagCreateView.as_view(), name='tag-create'),
+    path('tags/<int:tag_id>/blogs/', views.BlogByTagView.as_view(), name='blogs-by-tag'),
+    path('all-blogs/', views.AllBlogView.as_view(), name='all-blogs'),
 ]

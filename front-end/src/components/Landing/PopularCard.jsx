@@ -6,7 +6,7 @@ import { ArrowRightIcon } from "@heroicons/react/24/outline";
 export const PopularCard = ({ location, title, description, image }) => {
   return (
     <article className="group relative rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 max-w-xs">
-      {/* Image Section */}
+
       <div className="relative h-[100%] overflow-hidden">
         <div className="absolute m-6 flex flex-col gap-2 ">
           <div className="flex gap-2">
@@ -23,7 +23,6 @@ export const PopularCard = ({ location, title, description, image }) => {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-60"></div>
       </div>
 
-      {/* Card Content */}
       <div className="absolute inset-0 flex flex-col justify-between p-6 space-y-3 bg-black bg-opacity-70 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <div className="flex flex-col gap-2">
           <div className="flex gap-2 text-gray-400">
@@ -32,12 +31,6 @@ export const PopularCard = ({ location, title, description, image }) => {
           </div>
           <h2 className="text-lg font-bold md:text-xl">{title}</h2>
           <p className="text-sm">{description}</p>
-        </div>
-        <div className="flex justify-center group">
-          <Button variant="gold" className="flex items-center align-bottom gap-2">
-            <span>Read More</span>
-            <ArrowRightIcon className="h-6 w-6 transition duration-300 ease-in-out group-hover:translate-x-1" />
-          </Button>
         </div>
       </div>
     </article>

@@ -9,7 +9,7 @@ const Join = () => {
     <section className="p-16 mt-10 lg:px-24">
       <div className="gap-12 flex items-center flex-col md:flex-row justify-between">
         <div className=" text-center md:text-start">
-          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl">
+          <h2 className="text-lg font-medium  sm:text-xl md:text-2xl lg:text-3xl">
             Ready to Start Your Adventure?
           </h2>
           <p className="text-sm md:text-base max-w-[80ch] m-auto mt-4">

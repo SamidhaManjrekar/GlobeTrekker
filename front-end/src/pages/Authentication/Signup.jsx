@@ -3,7 +3,7 @@ import { z } from "zod";
 import Auth from "../../components/auth/auth";
 import { useNavigate } from "react-router-dom";
 import api from "@/api/interceptor";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "@/constants/access";
+import { toast } from "sonner";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -11,6 +11,7 @@ const Signup = () => {
     console.log("Signup Data:", data);
     try {
       const res = await api.post("/api/signup/", data);
+      toast.success("Account created successfully! Please log in.");
       navigate("/signin");
     } catch (error) {
       console.error("Login failed:", error);

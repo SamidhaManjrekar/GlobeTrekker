@@ -8,7 +8,7 @@ export const navData = [
 
 export const homeNavData = [
     { name: "Home", href: "/home" },
-    { name: "Profile", href: "#profile" },
+    { name: "Itinerary", href: "/my-itineraries" },
     { name: "Create Trip", href: "/create-trip" },
     { name: "Blog", href: "/blog" },
     { name: "Logout", href: "/logout", isButton: true },

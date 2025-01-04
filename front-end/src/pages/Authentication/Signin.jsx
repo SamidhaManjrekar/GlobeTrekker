@@ -4,25 +4,34 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "@/constants/access";
 import api from "@/api/interceptor";
+import { toast } from "sonner";
+import { useDispatch } from "react-redux";  
+import { setUser } from "@/redux/userSlice"; 
 
 const Signin = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();  
+
   const handleLogin = async (data) => {
     console.log("Login Data:", data);
     try {
       const res = await api.post("/api/signin/", data);
       localStorage.setItem(ACCESS_TOKEN, res.data.access);
       localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
-      if (localStorage.getItem("CreateTrip").length === 0) {
+      const createTrip = localStorage.getItem("CreateTrip");
+      if (createTrip && createTrip.length > 0) {
+        const tripData = JSON.parse(createTrip);
+        localStorage.removeItem("CreateTrip");
+        navigate("/show-trip", { state: { data: tripData } });
+      } else {
         navigate("/home");
       }
-      else{
-        const data = JSON.parse(localStorage.getItem("CreateTrip"));
-        localStorage.removeItem("CreateTrip");
-        navigate("/show-trip", { state: { data } });
-      }
+      const userInfo = await api.get("/api/users/me/");
+      dispatch(setUser(userInfo.data)); 
+      toast.success("Login successful! Welcome back.");
     } catch (error) {
       console.error("Login failed:", error);
+      toast.error("Login failed! Please check your credentials.");
     }
   };
 

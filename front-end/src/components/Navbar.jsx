@@ -25,8 +25,8 @@ export const Navbar = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-10 transition-colors duration-300 ${
-        scrolled ? "bg-black" : "bg-transparent"
+      className={`fixed top-0 left-0 w-full z-50 transition-colors duration-300 ${
+        scrolled ? "bg-black/40 backdrop-blur-md" : "bg-transparent"
       }`}
       id="header"
     >
@@ -45,7 +45,7 @@ export const Navbar = () => {
                 ) : (
                   <a
                     href={link.href}
-                    className="hover:text-[var(--clr-text-light)]"
+                    className="transition-all  hover:text-gold"
                   >
                     {link.name}
                   </a>

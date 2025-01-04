@@ -24,6 +24,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import createTrip from "../../assets/createTrip.jpg";
 
 const tripSchema = z.object({
   numberOfAdults: z.number().min(0, "Must be a positive number").default(1),
@@ -75,9 +76,19 @@ const CreateTrip = () => {
   return (
     <>
       <Navbar />
-      <div className="p-14 mt-8 max-w-3xl mx-auto space-y-6">
-        <h1 className="text-3xl font-bold text-center">Plan Your Dream Vacation</h1>
-        <p className="text-center text-lg">Tell us a little about your choices</p>
+      <div className="p-12 pt-14 max-w-3xl mx-auto space-y-6">
+        <img
+          src={createTrip}
+          alt="home image"
+          className="absolute top-0 left-0 w-full h-[800px] object-cover object-center z-[-1]"
+        />
+        <div className="absolute top-0 left-0 w-full h-[850px] bg-custom-gradient z-[-1]" />
+        <h1 className="text-3xl font-bold text-center">
+          Plan Your Dream Vacation
+        </h1>
+        <p className="text-center text-lg">
+          Tell us a little about your choices
+        </p>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
