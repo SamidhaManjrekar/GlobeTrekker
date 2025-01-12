@@ -6,6 +6,7 @@ import { Navbar } from "@/components/Navbar";
 import { toast } from "sonner";
 import api from "@/api/interceptor";
 import TripDetails from "@/components/Trip/TripDetails";
+import { getImages } from "@/services/ImageGenerator";
 
 const ShowTrip = () => {
   const location = useLocation();
@@ -42,8 +43,9 @@ const ShowTrip = () => {
     setSaving(true);
     try {
       const formattedData = formatData(tripData);
+      console.log("Formatted Data to Send:", formattedData);
       await api.post("/api/itineraries/", formattedData);
-      navigate('/home');
+      navigate("/home");
       toast("Tour trip has been saved!", {
         description: "You can view your saved trip in the My Trips section.",
         action: {
@@ -52,10 +54,7 @@ const ShowTrip = () => {
         },
       });
     } catch (error) {
-      console.error(
-        "Error Saving Itinerary:",
-        error.response ? error.response.data : error.message
-      );
+      console.log(error);
       setError("Failed to save the trip. Please try again.");
       toast.error("Error saving trip. Please try again.");
     } finally {
@@ -78,9 +77,15 @@ const ShowTrip = () => {
         `);
 
         const response = await result?.response?.text();
-        const data = JSON.parse(response);
+        let data = JSON.parse(response);
+
+        const imageURL = await getImages(formData.destination);
+        data = {
+          ...data,
+          image: imageURL?.url || "https://via.placeholder.com/600x400",
+        };
         setTripData(data);
-        console.log(data);
+        console.log("data", data);
       } catch (err) {
         console.error("Error generating trip data:", err);
         setError("Failed to generate trip data. Please try again.");
@@ -92,44 +97,46 @@ const ShowTrip = () => {
     fetchTripData();
   }, [formData]);
 
-  if (loading) {
-    return <p>Loading your trip plan...</p>;
-  }
-
-  if (error) {
-    return <p>{error}</p>;
-  }
-
-  if (!tripData) {
-    return <p>No trip data available.</p>;
-  }
-
   return (
     <>
       <Navbar />
       <div className="p-16 mx-4 pt-20">
-        <h1 className="text-3xl font-bold mb-6 text-center">
-          Your Dream Trip is Now Planned!
-        </h1>
+        {loading ? (
+          <p>Loading your trip plan...</p>
+        ) : error ? (
+          <p>{error}</p>
+        ) : tripData ? (
+          <>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 text-center">
+              Your Dream Trip is Now Planned!
+            </h1>
 
-        <TripDetails tripData={tripData} />
+            <TripDetails tripData={tripData} />
 
-        <div className="flex justify-center align-middle mt-10 gap-9">
-          <Link to="/create-trip">
-            <Button type="button" variant="gold" className="px-12 py-3">
-              Go Back
-            </Button>
-          </Link>
-          <Button
-            variant="gold"
-            type="button"
-            onClick={saveTrip}
-            disabled={saving}
-            className="px-12 py-3"
-          >
-            {saving ? "Saving..." : "Save Trip"}
-          </Button>
-        </div>
+            <div className="flex justify-center align-middle mt-10 gap-4 sm:gap-8">
+              <Link to="/create-trip">
+                <Button
+                  type="button"
+                  variant="gold"
+                  className="px-8 sm:px-12 py-2 sm:py-3"
+                >
+                  Go Back
+                </Button>
+              </Link>
+              <Button
+                variant="gold"
+                type="button"
+                onClick={saveTrip}
+                disabled={saving}
+                className="px-8 sm:px-12 py-2 sm:py-3"
+              >
+                {saving ? "Saving..." : "Save Trip"}
+              </Button>
+            </div>
+          </>
+        ) : (
+          <p>No trip data available.</p>
+        )}
       </div>
     </>
   );

@@ -26,7 +26,7 @@ const TripDetails = ({ tripData }) => {
           {hotels.map((hotel, index) => (
             <Card
               key={index}
-              className="p-4 shadow-md w-full items-center border-2 border-gold sm:w-1/2 lg:w-1/3"
+              className="p-4 w-full items-center border-2 border-gold sm:w-1/2 lg:w-1/3"
             >
               <div className="font-semibold text-2xl mb-1">
                 {hotel.hotel_name}
@@ -100,7 +100,7 @@ const TripDetails = ({ tripData }) => {
       <section className="mb-8">
         <h2 className="text-2xl font-medium mb-4">Travel Options</h2>
         {travelOptions.map((option, index) => (
-          <Card key={index} className="p-4 shadow-md mb-4 border-2 border-gold">
+          <Card key={index} className="p-4 mb-4 border-2 border-gold">
             <div className="mb-4">
               <div className="font-semibold text-lg">{option.title}</div>
               <div className="text-sm mt-2 font-medium">

@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
-import aboutImage from "../../assets/about.jpg";
+import Image from "../Image";
 
 const AboutSection = () => {
   return (
@@ -30,8 +30,8 @@ const AboutSection = () => {
           </Button>
         </div>
         <div className="overflow-hidden max-w-xs">
-          <img
-            src={aboutImage}
+          <Image
+            src='about.jpg'
             alt="about image"
             className="w-full object-cover rounded-md"
           />

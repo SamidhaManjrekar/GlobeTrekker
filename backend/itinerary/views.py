@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from .models import Itinerary
-from .serializers import ItinerarySerializer
+from .serializers import ItinerarySerializer, DestinationSerializer
 
 class ItineraryListCreateView(generics.ListCreateAPIView):
     serializer_class = ItinerarySerializer
@@ -27,3 +27,11 @@ class ItineraryDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Itinerary.objects.filter(user=self.request.user)
+    
+class ItineraryDestinationsView(generics.ListAPIView):
+    serializer_class = DestinationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        return Itinerary.objects.filter(user=self.request.user).only('destination_location')
+    

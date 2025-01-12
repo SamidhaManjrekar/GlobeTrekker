@@ -12,7 +12,7 @@ import { exploreData } from "@/data/exploreData";
 import { format } from "date-fns";
 import { Navbar } from "../Navbar";
 import api from "@/api/interceptor";
-import { Pencil, Trash2, Save } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   AlertDialog,
@@ -25,19 +25,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
 import { Textarea } from "../ui/textarea";
+import { toast } from "sonner";
+import { Avatar, AvatarFallback } from "../ui/avatar";
+import DOMPurify from "dompurify";
 
 const Posts = () => {
   const { id } = useParams();
@@ -46,7 +37,9 @@ const Posts = () => {
   const [error, setError] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const [editState, setEditState] = useState({ title: "", content: "", tags: "" });
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
+  const [submit, setSubmit] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,7 +51,6 @@ const Posts = () => {
         console.error("Error fetching current user info:", err);
       }
     };
-
     fetchCurrentUser();
   }, []);
 
@@ -67,11 +59,9 @@ const Posts = () => {
       try {
         const res = await api.get(`/api/blogs/${id}/`);
         setData(res.data);
-        setEditState({
-          title: res.data.title || "",
-          content: res.data.content || "",
-          tags: res.data.tags?.join(", ") || "",
-        });
+
+        const commentsData = await api.get(`/api/blogs/${id}/comments/`);
+        setComments(commentsData.data);
       } catch (err) {
         setError(err.response?.data?.message || "An error occurred");
       } finally {
@@ -95,18 +85,22 @@ const Posts = () => {
     }
   };
 
-  const handleEdit = async () => {
+  const handleAddComment = async () => {
+    if (newComment.trim() === "") return;
+
+    setSubmit(true);
     try {
-      await api.put(`/api/blogs/${id}/`, {
-        title: editState.title,
-        content: editState.content,
-        tags: editState.tags.split(",").map(tag => tag.trim()),
+      const res = await api.post(`/api/blogs/${id}/comments/`, {
+        content: newComment,
       });
-      toast.success("Blog post updated successfully");
-      navigate(`/blog/${id}`);
+      setComments([res.data, ...comments]);
+      setNewComment("");
+      toast.success("Comment added successfully");
     } catch (error) {
-      console.error("Error updating blog post:", error);
-      toast.error("Failed to update the blog post");
+      console.error("Error adding comment:", error);
+      toast.error("Failed to add comment");
+    } finally {
+      setSubmit(false);
     }
   };
 
@@ -118,13 +112,46 @@ const Posts = () => {
       ) : error ? (
         <div className="text-center text-lg text-red-500">Error: {error}</div>
       ) : (
-        <Card className="shadow-md border-4 border-gold">
-          <CardHeader className="mb-4">
+        <Card className="border-4 border-gold">
+          <CardHeader className="mb-4 relative">
             <CardTitle>
               <h1 className="text-3xl font-bold text-center mb-4">
                 {data?.title || "Untitled"}
               </h1>
             </CardTitle>
+            <div className="absolute right-4 top-2">
+              {currentUser?.name === data?.author && (
+                <div className="flex gap-4">
+                  <Button variant="gold" onClick={() => navigate(`/blog-edit/${id}`)}>
+                    <Pencil />
+                  </Button>
+
+                  <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="gold">
+                        <Trash2 />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Are you absolutely sure?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDelete}>
+                          Continue
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              )}
+            </div>
             <div className="flex flex-col md:flex-row md:justify-between items-center text-sm text-gray-600">
               <span>
                 <strong>By:</strong> {data?.author || "Unknown"}
@@ -146,7 +173,7 @@ const Posts = () => {
                   {data.tags.map((tag, index) => (
                     <span
                       key={index}
-                      className="bg-yellow-100 text-yellow-600 px-3 py-1 text-sm rounded-full shadow-sm"
+                      className="bg-yellow-100 text-yellow-600 px-3 py-1 text-sm rounded-full"
                     >
                       #{tag}
                     </span>
@@ -157,105 +184,69 @@ const Posts = () => {
           </CardHeader>
 
           <CardContent>
-            <div className="leading-relaxed text-gray-800 mb-6">
-              <p>{data?.content || "No content available"}</p>
-            </div>
-
-            {data.gallery?.length > 0 && (
-              <div>
-                <h2 className="text-2xl font-semibold text-center text-gray-700 mb-4">
-                  Gallery
-                </h2>
-                <div className="flex justify-center">
-                  <img
-                    src={data.gallery}
-                    alt={data.title}
-                    className="rounded-lg shadow-lg w-full md:w-1/2 lg:w-1/4"
-                  />
-                </div>
-              </div>
-            )}
+            <div
+              className="leading-relaxed text-gray-800 mb-6"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(data?.content || "No content available"),
+              }}
+            />
           </CardContent>
 
-          <CardFooter className="flex justify-center">
-            {currentUser?.name === data?.author && (
-              <div className="flex gap-4">
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="gold" className="w-28">
-                      <Pencil /> Edit
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                      <DialogTitle>Edit Your Blog</DialogTitle>
-                      <DialogDescription>
-                        Make changes to your blog here. Click save when you're done.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      <div>
-                        <Label htmlFor="title">Title</Label>
-                        <Input
-                          id="title"
-                          value={editState.title}
-                          onChange={e =>
-                            setEditState({ ...editState, title: e.target.value })
-                          }
-                        />
+          <CardFooter>
+            <div className="mt-12 w-full">
+              <h2 className="text-2xl font-semibold mb-4">Comments</h2>
+              {comments.length === 0 ? (
+                <p>No comments yet.</p>
+              ) : (
+                <div className="space-y-6">
+                  {comments.map((comment) => (
+                    <div
+                      key={comment.id}
+                      className="px-4 py-2 border rounded-lg bg-gray-50 shadow-sm"
+                    >
+                      <div className="flex gap-4 mb-1 items-center">
+                        <Avatar className="w-10 h-10 border-gray-400 border-2">
+                          <AvatarFallback className="uppercase">
+                            {comment.author?.[0]}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="text-sm">
+                          <div className="font-semibold">{comment.author}</div>
+                          <div className="text-xs text-gray-500">
+                            {format(
+                              new Date(comment.created_at),
+                              "MMMM dd, yyyy"
+                            )}
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <Label htmlFor="content">Content</Label>
-                        <Textarea
-                          id="content"
-                          value={editState.content}
-                          onChange={e =>
-                            setEditState({ ...editState, content: e.target.value })
-                          }
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="tags">Tags</Label>
-                        <Input
-                          id="tags"
-                          value={editState.tags}
-                          onChange={e =>
-                            setEditState({ ...editState, tags: e.target.value })
-                          }
-                        />
-                      </div>
+                      <p className="text-gray-700">{comment.content}</p>
                     </div>
-                    <DialogFooter>
-                      <Button onClick={handleEdit} variant="gold"><Save/>Save changes</Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
+                  ))}
+                </div>
+              )}
 
-                <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="gold" className="w-28">
-                      <Trash2 /> Delete
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        Are you absolutely sure?
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleDelete}>
-                        Continue
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+              <div className="mt-8">
+                <h3 className="font-semibold text-lg">Add a Comment</h3>
+                <div className="flex flex-col md:flex-row gap-4 md:items-center">
+                  <Textarea
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    placeholder="Write your comment here"
+                    rows="4"
+                    className="w-full md:w-4/5 mt-2"
+                  />
+                  <Button
+                    onClick={handleAddComment}
+                    variant="gold"
+                    disabled={submit}
+                    className="md:w-1/5 mt-4 md:mt-0"
+                  >
+                    {submit ? "Submitting..." : "Submit"}
+                  </Button>
+                </div>
               </div>
-            )}
+            </div>
           </CardFooter>
         </Card>
       )}

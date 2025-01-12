@@ -1,4 +1,5 @@
 import React from "react";
+import DOMPurify from "dompurify";
 import {
   Card,
   CardContent,
@@ -11,6 +12,8 @@ import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 
 const BlogCards = ({ data }) => {
+  const sanitizedContent = DOMPurify.sanitize(data.content);
+
   return (
     <div className="my-6 w-full sm:w-54 mx-auto">
       <Card className="relative group border-2 border-gold">
@@ -27,7 +30,10 @@ const BlogCards = ({ data }) => {
         </CardHeader>
 
         <CardContent className="p-4 text-white bg-zinc-950">
-          <p className="line-clamp-3 text-sm">{data.content}</p>
+          <p
+            className="line-clamp-3 text-sm"
+            dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+          />
         </CardContent>
 
         <CardFooter className="flex justify-center text-white bg-zinc-950 rounded-b-lg">

@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
+import Image from "../Image";
 
 const ExploreCarousel = ({ exploreData }) => {
   const autoplayInstance = useRef(
@@ -41,8 +42,8 @@ const ExploreCarousel = ({ exploreData }) => {
           {exploreData.map((data, index) => (
             <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
               <div className="p-1">
-                <div className="relative rounded-lg overflow-hidden shadow-lg">
-                  <img
+                <div className="relative rounded-lg overflow-hidden">
+                  <Image
                     src={data.image}
                     alt={data.title}
                     className="w-full h-64 object-cover"

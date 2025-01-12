@@ -24,7 +24,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import createTrip from "../../assets/createTrip.jpg";
+import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import Image from "@/components/Image";
 
 const tripSchema = z.object({
   numberOfAdults: z.number().min(0, "Must be a positive number").default(1),
@@ -40,10 +41,8 @@ const tripSchema = z.object({
 });
 
 const CreateTrip = () => {
-  const [isSignedIn, setIsSignedIn] = useState(
-    !!(localStorage.getItem("access") && localStorage.getItem("refresh"))
-  );
   const navigate = useNavigate();
+  const [place, setPlace] = useState("");
 
   const form = useForm({
     resolver: zodResolver(tripSchema),
@@ -60,6 +59,9 @@ const CreateTrip = () => {
   });
 
   const onSubmit = async (data) => {
+    const isSignedIn = !!(
+      localStorage.getItem("access") && localStorage.getItem("refresh")
+    );
     if (isSignedIn) {
       navigate("/show-trip", { state: { data } });
     } else {
@@ -68,22 +70,17 @@ const CreateTrip = () => {
     }
   };
 
-  const handleSignInSuccess = () => {
-    setIsSignedIn(true);
-    navigate("/show-trip", { state: { data: form.getValues() } });
-  };
-
   return (
     <>
       <Navbar />
       <div className="p-12 pt-14 max-w-3xl mx-auto space-y-6">
-        <img
-          src={createTrip}
+        <Image
+          src="createTrip.jpg"
           alt="home image"
           className="absolute top-0 left-0 w-full h-[800px] object-cover object-center z-[-1]"
         />
         <div className="absolute top-0 left-0 w-full h-[850px] bg-custom-gradient z-[-1]" />
-        <h1 className="text-3xl font-bold text-center">
+        <h1 className="text-center font-montserrat text-4xl font-medium mb-10">
           Plan Your Dream Vacation
         </h1>
         <p className="text-center text-lg">
@@ -150,7 +147,39 @@ const CreateTrip = () => {
                 <FormItem>
                   <FormLabel className="text-main">Traveling From</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter source" {...field} />
+                  <GooglePlacesAutocomplete
+                      apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+                      selectProps={{
+                        value: field.label,
+                        onChange: (v) => field.onChange(v.label),
+                        styles: {
+                          singleValue: (provided) => ({
+                            ...provided,
+                            color: "#FFFFFF", 
+                          }),
+                          control: (provided) => ({
+                            ...provided,
+                            backgroundColor: "transparent",
+                            color: "#FFFFFF", 
+                          }),
+                          input: (provided) => ({
+                            ...provided,
+                            color: "#FFFFFF", 
+                          }),
+                          placeholder: (provided) => ({
+                            ...provided,
+                            color: "#a3a3a3", 
+                          }),
+                          option: (provided, state) => ({
+                            ...provided,
+                            backgroundColor: state.isFocused
+                              ? "hsl(51, 79%, 42%)"
+                              : "#f9f9f9", 
+                            color: state.isFocused ? "#fff" : "#4a4a4a", 
+                          }),
+                        },
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -164,7 +193,39 @@ const CreateTrip = () => {
                 <FormItem>
                   <FormLabel className="text-main">Traveling To</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter destination" {...field} />
+                  <GooglePlacesAutocomplete
+                      apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+                      selectProps={{
+                        value: field.label,
+                        onChange: (v) => field.onChange(v.label),
+                        styles: {
+                          singleValue: (provided) => ({
+                            ...provided,
+                            color: "#FFFFFF", 
+                          }),
+                          control: (provided) => ({
+                            ...provided,
+                            backgroundColor: "transparent",
+                            color: "#FFFFFF", 
+                          }),
+                          input: (provided) => ({
+                            ...provided,
+                            color: "#FFFFFF", 
+                          }),
+                          placeholder: (provided) => ({
+                            ...provided,
+                            color: "#a3a3a3", 
+                          }),
+                          option: (provided, state) => ({
+                            ...provided,
+                            backgroundColor: state.isFocused
+                              ? "hsl(51, 79%, 42%)"
+                              : "#f9f9f9", 
+                            color: state.isFocused ? "#fff" : "#4a4a4a", 
+                          }),
+                        },
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -1,13 +1,13 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import homeImage from "../../assets/home.jpg";
+import Image from "../Image";
 
 const HeroSection = () => {
   return (
     <section className="relative p-16 pt-20" id="home">
-      <img
-        src={homeImage}
+      <Image
+        src='home.jpg'
         alt="home image"
         className="absolute top-0 left-0 w-full h-[800px] object-cover object-center z-[-1]"
       />

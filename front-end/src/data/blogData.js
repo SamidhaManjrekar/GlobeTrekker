@@ -1,14 +1,8 @@
-import explore1Image from "../assets/explore1.jpg";
-import explore2Image from "../assets/explore2.jpg";
-import explore3Image from "../assets/explore3.jpg";
-import explore4Image from "../assets/explore4.jpg";
-import explore5Image from "../assets/explore5.jpg";
-
 export const blogPosts = [
     {
       id: 1,
       title: 'Cultural Immersions: A Journey Through Time',
-      image: explore1Image,
+      image: "explore1.jpg",
       content: `Embarking on a cultural immersion journey is one of the most enriching ways to travel. When you step beyond the tourist attractions and into the everyday lives of local communities, you open yourself to a deeper, more authentic experience. Whether you're visiting a remote village or a bustling city, immersing yourself in local culture allows you to connect with people on a human level.
   
       From traditional music and dance to culinary experiences, cultural immersion travel brings you face to face with the heart of a destination. It involves participating in age-old customs, learning the language, and appreciating the art, history, and architecture that define a place. In this post, we dive into the most captivating cultural experiences around the globe. We explore ancient ceremonies in Asia, religious traditions in Europe, and the vibrant street festivals in Latin America.
@@ -23,7 +17,7 @@ export const blogPosts = [
     {
       id: 2,
       title: 'The Ultimate Guide to Adventure Travel',
-      image: explore2Image,
+      image: "explore2.jpg",
       content: `For thrill-seekers, adventure travel offers a world of possibilities. Whether you’re scaling peaks, trekking through jungles, or diving into the depths of the ocean, the adrenaline rush of outdoor adventure can be like no other. But adventure travel is not just about adrenaline—it’s about challenging yourself, discovering new places, and creating unforgettable memories.
   
       In this ultimate guide to adventure travel, we’ll take you through the best destinations for every kind of adventure enthusiast. From the rugged terrains of Patagonia to the jungle treks of Costa Rica, and the world-class surfing spots in Hawaii, we cover it all. We’ll also provide tips on how to stay safe while pursuing extreme sports, how to prepare for a long-term adventure, and the gear you’ll need to make the most out of every trip.
@@ -38,7 +32,7 @@ export const blogPosts = [
     {
       id: 3,
       title: 'Family-Friendly Destinations for Every Age',
-      image: explore3Image,
+      image: "explore3.jpg",
       content: `Traveling with family can be both rewarding and challenging. Whether you have toddlers or teenagers, finding destinations that offer activities for everyone is key to a successful vacation. Family-friendly travel is all about balance—destinations that provide fun, engaging, and educational experiences for kids, while offering relaxation and adventure for adults.
   
       In this blog post, we share the best destinations that cater to families, offering activities and experiences suitable for all ages. Whether it's exploring the museums and parks in Washington D.C., or enjoying the sandy beaches of the Caribbean, there's a perfect family vacation waiting for you. Our guide also includes tips on traveling with young children, navigating family-friendly accommodations, and finding destinations that offer both adventure and relaxation.
@@ -53,7 +47,7 @@ export const blogPosts = [
     {
       id: 4,
       title: 'How to Plan a Luxury Escape on a Budget',
-      image: explore4Image,
+      image: "explore4.jpg",
       content: `Luxury travel doesn't always have to come with a hefty price tag. While it’s easy to assume that high-end travel is reserved for the ultra-wealthy, there are plenty of ways to experience luxury escapes without breaking the bank. The key is in smart planning, booking at the right time, and knowing where to splurge and where to save.
   
       In this blog post, we’ll explore how to enjoy a luxury vacation on a budget. From finding affordable five-star resorts during off-peak seasons to accessing discounts on first-class flights, we’ve got you covered. We’ll also discuss how to enjoy exclusive experiences—like private tours, fine dining, and spa treatments—without paying top dollar.
@@ -68,7 +62,7 @@ export const blogPosts = [
     {
       id: 5,
       title: 'Best Nature Retreats for Mindfulness and Relaxation',
-      image: explore5Image,
+      image: "explore5.jpg",
       content: `In today’s fast-paced world, nature retreats offer the perfect escape from the stress and noise of everyday life. Immersing yourself in nature not only helps you relax, but it also allows you to reconnect with your inner self, recharge your mind, and promote overall well-being. Whether you’re looking to meditate on a mountaintop, enjoy a quiet beach retreat, or hike through forest trails, nature retreats offer various experiences to suit every traveler.
   
       In this post, we’ll take you through some of the best nature retreats around the world. From the quietude of the Swiss Alps to the peaceful beaches of Thailand, these retreats provide the perfect environment for mindfulness, relaxation, and rejuvenation. We’ll explore options for guided meditation, yoga, and wellness programs that can help you deepen your connection with nature and yourself.

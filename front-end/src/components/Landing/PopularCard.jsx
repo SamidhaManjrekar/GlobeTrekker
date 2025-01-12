@@ -1,11 +1,10 @@
 import React from "react";
 import { MapPinIcon } from "@heroicons/react/24/outline";
-import { Button } from "@/components/ui/button";
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
+import Image from "../Image";
 
 export const PopularCard = ({ location, title, description, image }) => {
   return (
-    <article className="group relative rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 max-w-xs">
+    <section className="group relative rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 max-w-xs">
 
       <div className="relative h-[100%] overflow-hidden">
         <div className="absolute m-6 flex flex-col gap-2 ">
@@ -15,7 +14,7 @@ export const PopularCard = ({ location, title, description, image }) => {
           </div>
           <h2 className="text-lg font-bold md:text-xl">{title}</h2>
         </div>
-        <img
+        <Image
           src={image}
           alt={title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -33,6 +32,6 @@ export const PopularCard = ({ location, title, description, image }) => {
           <p className="text-sm">{description}</p>
         </div>
       </div>
-    </article>
+    </section>
   );
 };

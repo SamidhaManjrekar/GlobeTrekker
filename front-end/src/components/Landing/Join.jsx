@@ -1,8 +1,8 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
-import joinImage from "../../assets/join.jpg";
 import { Link } from "react-router-dom";
+import Image from "../Image";
 
 const Join = () => {
   return (
@@ -25,8 +25,8 @@ const Join = () => {
           </Link>
         </div>
         <div className="overflow-hidden max-w-xs">
-          <img
-            src={joinImage}
+          <Image
+            src="join.jpg"
             alt="about image"
             className="w-full object-cover rounded-md"
           />

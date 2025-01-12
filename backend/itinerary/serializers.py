@@ -30,7 +30,12 @@ class ImportantNoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImportantNote
         fields = '__all__'
-
+        
+class DestinationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Itinerary
+        fields = ['destination_location']
+        extra_kwargs = {'user': {'read_only': True}}
 
 class ItinerarySerializer(serializers.ModelSerializer):
     hotel = HotelSerializer(many=True, required=False)

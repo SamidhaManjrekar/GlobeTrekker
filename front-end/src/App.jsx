@@ -31,6 +31,7 @@ const routes = (
       <Route path='/blog' element={<ProtectedRoutes><Blog/></ProtectedRoutes>}/>
       <Route path="/blog/:id" element={<ProtectedRoutes><Posts /></ProtectedRoutes>} />
       <Route path="/blog-create" element={<ProtectedRoutes><Template /></ProtectedRoutes>} />
+      <Route path="/blog-edit/:id" element={<Template />} />
       <Route path="/my-itineraries" element={<ProtectedRoutes><Itinerary /></ProtectedRoutes>} />
       <Route path="/itinerary/:id" element={<ProtectedRoutes><ItineraryDetails /></ProtectedRoutes>} />
     </Routes>
