@@ -20,6 +20,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import api from "@/api/interceptor";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
+import { Save } from "lucide-react";
 
 const FormSchema = z.object({
   title: z.string().min(1, "Title is required."),
@@ -187,7 +188,7 @@ const Template = () => {
 
             <div className="flex justify-center">
               <Button type="submit" variant="gold" className="w-36" disabled={loading}>
-                {loading ? "Submitting..." : id ? "Update Blog" : "Submit"}
+                <Save/>{loading ? "Submitting..." : id ? "Update Blog" : "Submit"}
               </Button>
             </div>
           </form>

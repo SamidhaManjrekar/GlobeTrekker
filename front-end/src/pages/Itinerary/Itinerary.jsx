@@ -14,6 +14,10 @@ const Itinerary = () => {
     return [...new Set(activities.map((activity) => activity.city))];
   };
 
+  const deleteTrip = (id) => {
+    setItineraries(itineraries.filter((itinerary) => itinerary.id !== id));
+  };
+
   useEffect(() => {
     const fetchAllTrips = async () => {
       try {
@@ -80,6 +84,7 @@ const Itinerary = () => {
                 startDate={itinerary.departure_date}
                 endDate={itinerary.arrival_date}
                 cities={getUniqueCities(itinerary.activities)}
+                deleteTrip={deleteTrip} 
               />
             );
           })}

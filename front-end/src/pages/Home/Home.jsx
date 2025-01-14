@@ -18,7 +18,6 @@ const Home = () => {
     const fetchUpcomingTrips = async () => {
       try {
         const res = await api.get("/api/itineraries/upcoming/");
-        console.log(res.data);
         setUpcomingTripData(res?.data || {});
       } catch (error) {
         console.log(error);
@@ -104,7 +103,7 @@ const Home = () => {
         </div>
       </div>
 
-      {upcomingTripData && (
+      {upcomingTripData.arrival_date && (
         <div className="p-12 rounded-lg">
           <h2 className="font-medium text-3xl mb-10 text-center">
             Your Upcoming Trip
