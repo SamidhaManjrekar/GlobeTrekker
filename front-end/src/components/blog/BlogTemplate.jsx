@@ -41,6 +41,7 @@ const Template = () => {
       title: "",
       content: "",
       tags: [],
+      images: [],
     },
   });
 
@@ -76,6 +77,7 @@ const Template = () => {
         title: initialData.title,
         content: initialData.content,
         tags: initialData.tags,
+        images: initialData.gallery,
       });
     }
   }, [initialData, form]);
@@ -143,9 +145,30 @@ const Template = () => {
                   <FormControl>
                     <ReactQuill
                       theme="snow"
-                      value={field.value} 
-                      onChange={field.onChange} 
+                      value={field.value}
+                      onChange={field.onChange}
                       placeholder="Write your content here..."
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="images"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="images" className="text-main">
+                    Upload Images
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      id="images"
+                      type="file"
+                      multiple
+                      accept="image/*"
                     />
                   </FormControl>
                   <FormMessage />
@@ -161,7 +184,10 @@ const Template = () => {
                   <FormLabel>Tags</FormLabel>
                   <div className="grid grid-cols-2 gap-4">
                     {tagsData.map((tag) => (
-                      <FormItem key={tag.id} className="flex items-center space-x-2">
+                      <FormItem
+                        key={tag.id}
+                        className="flex items-center space-x-2"
+                      >
                         <FormControl>
                           <Checkbox
                             id={tag.id}
@@ -170,7 +196,9 @@ const Template = () => {
                               field.onChange(
                                 checked
                                   ? [...field.value, tag.name]
-                                  : field.value.filter((value) => value !== tag.name)
+                                  : field.value.filter(
+                                      (value) => value !== tag.name
+                                    )
                               );
                             }}
                           />
@@ -187,8 +215,14 @@ const Template = () => {
             />
 
             <div className="flex justify-center">
-              <Button type="submit" variant="gold" className="w-36" disabled={loading}>
-                <Save/>{loading ? "Submitting..." : id ? "Update Blog" : "Submit"}
+              <Button
+                type="submit"
+                variant="gold"
+                className="w-36"
+                disabled={loading}
+              >
+                <Save />
+                {loading ? "Submitting..." : id ? "Update Blog" : "Submit"}
               </Button>
             </div>
           </form>

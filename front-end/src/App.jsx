@@ -12,6 +12,7 @@ import ProtectedRoutes from './components/ProtectedRoutes';
 import Template from './components/blog/BlogTemplate';
 import Itinerary from './pages/Itinerary/Itinerary';
 import ItineraryDetails from './pages/Itinerary/ItineraryDetails';
+import Profile from './pages/Profile/Profile';
 
 function Logout(){
   localStorage.clear()
@@ -29,11 +30,12 @@ const routes = (
       <Route path='/create-trip' element={<CreateTrip/>}/>
       <Route path='/show-trip' element={<ProtectedRoutes><ShowTrip/></ProtectedRoutes>}/>
       <Route path='/blog' element={<ProtectedRoutes><Blog/></ProtectedRoutes>}/>
-      <Route path="/blog/:id" element={<ProtectedRoutes><Posts /></ProtectedRoutes>} />
-      <Route path="/blog-create" element={<ProtectedRoutes><Template /></ProtectedRoutes>} />
+      <Route path="/blog/:id" element={<ProtectedRoutes><Posts/></ProtectedRoutes>} />
+      <Route path="/blog-create" element={<ProtectedRoutes><Template/></ProtectedRoutes>} />
       <Route path="/blog-edit/:id" element={<Template />} />
-      <Route path="/my-itineraries" element={<ProtectedRoutes><Itinerary /></ProtectedRoutes>} />
-      <Route path="/itinerary/:id" element={<ProtectedRoutes><ItineraryDetails /></ProtectedRoutes>} />
+      <Route path="/my-itineraries" element={<ProtectedRoutes><Itinerary/></ProtectedRoutes>} />
+      <Route path="/itinerary/:id" element={<ProtectedRoutes><ItineraryDetails/></ProtectedRoutes>} />
+      <Route path="/profile" element={<ProtectedRoutes><Profile/></ProtectedRoutes>} />
     </Routes>
   </Router>
 

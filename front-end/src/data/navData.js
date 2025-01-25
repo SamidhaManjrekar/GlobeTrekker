@@ -11,5 +11,5 @@ export const homeNavData = [
     { name: "Itinerary", href: "/my-itineraries" },
     { name: "Create Trip", href: "/create-trip" },
     { name: "Blog", href: "/blog" },
-    { name: "Logout", href: "/logout", isButton: true },
+    { name: "Profile", isAvatar: true },
 ];

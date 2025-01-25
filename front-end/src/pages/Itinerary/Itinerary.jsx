@@ -23,6 +23,7 @@ const Itinerary = () => {
       try {
         const res = await api.get("/api/itineraries/");
         setItineraries(res?.data || []);
+        console.log(itineraries);
       } catch (error) {
         console.error("Error fetching itineraries:", error);
       }
@@ -81,6 +82,7 @@ const Itinerary = () => {
                 key={itinerary.id}
                 id={itinerary.id}
                 name={itinerary.destination_location}
+                imageUrl={itinerary.image_url}
                 startDate={itinerary.departure_date}
                 endDate={itinerary.arrival_date}
                 cities={getUniqueCities(itinerary.activities)}

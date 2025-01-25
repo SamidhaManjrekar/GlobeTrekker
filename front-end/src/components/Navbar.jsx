@@ -4,12 +4,23 @@ import { Link, useLocation } from "react-router-dom";
 import { navData, homeNavData } from "@/data/navData";
 import { Menu } from "lucide-react";
 import { X } from "lucide-react";
+import { Avatar } from "./ui/avatar";
+import { useSelector } from "react-redux";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 export const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const currentLinks = location.pathname === "/" ? navData : homeNavData;
+  const userInfo = useSelector((state) => state.user.userInfo);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,6 +56,22 @@ export const Navbar = () => {
                     <Link to={link.href}>
                       <Button variant="gold">{link.name}</Button>
                     </Link>
+                  ) : link.isAvatar ? (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger>
+                        <Avatar className="bg-gold flex justify-center items-center uppercase">
+                          {userInfo.name[0]}
+                        </Avatar>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <Link to={'/profile'}>
+                          <DropdownMenuItem>Profile</DropdownMenuItem>
+                        </Link>
+                        <Link to={'/logout'}>
+                          <DropdownMenuItem>Logout</DropdownMenuItem>
+                        </Link>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   ) : (
                     <a
                       href={link.href}
@@ -60,7 +87,7 @@ export const Navbar = () => {
 
           <div className="md:hidden">
             <div
-              className="cursor-pointer z-50" 
+              className="cursor-pointer z-50"
               onClick={() => setOpen((prev) => !prev)}
             >
               {open ? <X /> : <Menu />}
@@ -68,7 +95,7 @@ export const Navbar = () => {
           </div>
         </nav>
       </header>
-      
+
       <div
         className={`fixed top-0 right-0 w-full h-full z-40 flex flex-col items-center justify-center bg-black/70 backdrop-blur-md transition-all duration-500 ease-in-out ${
           open ? "translate-x-0" : "translate-x-full"
@@ -80,10 +107,7 @@ export const Navbar = () => {
               <li key={index}>
                 {link.isButton ? (
                   <Link to={link.href}>
-                    <Button
-                      variant="gold"
-                      onClick={() => setOpen(false)} 
-                    >
+                    <Button variant="gold" onClick={() => setOpen(false)}>
                       {link.name}
                     </Button>
                   </Link>
@@ -91,7 +115,7 @@ export const Navbar = () => {
                   <a
                     href={link.href}
                     className="transition-all hover:text-gold"
-                    onClick={() => setOpen(false)} 
+                    onClick={() => setOpen(false)}
                   >
                     {link.name}
                   </a>
