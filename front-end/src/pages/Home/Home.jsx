@@ -32,7 +32,7 @@ const Home = () => {
       <Navbar />
       <div className="relative pt-20 h-[700px] p-16 sm:px-16 lg:px-20">
         <Image
-          src='home.jpg'
+          src="home.jpg"
           alt="home image"
           className="absolute top-0 left-0 w-full h-[800px] object-cover object-center z-[-1]"
         />
@@ -66,7 +66,7 @@ const Home = () => {
 
           <div className="w-full lg:w-1/2">
             <Image
-              src='travel2.jpg'
+              src="travel2.jpg"
               alt="Trip Preview"
               className="w-full h-auto rounded-lg"
             />
@@ -80,7 +80,7 @@ const Home = () => {
         <div className="flex flex-col lg:flex-row justify-between items-center gap-12 max-w-7xl mx-auto">
           <div className="w-full lg:w-1/2">
             <Image
-              src='travel.jpg'
+              src="travel.jpg"
               alt="Trip Preview"
               className="w-full h-auto rounded-lg"
             />
@@ -104,21 +104,26 @@ const Home = () => {
       </div>
 
       {upcomingTripData.arrival_date && (
-        <div className="p-12 rounded-lg">
-          <h2 className="font-medium text-3xl mb-10 text-center">
+        <div className="p-6 sm:p-12 rounded-lg">
+          <h2 className="font-medium text-2xl sm:text-3xl mb-6 sm:mb-10 text-center">
             Your Upcoming Trip
           </h2>
-          <div className="flex flex-col md:flex-row gap-6 items-center justify-center px-6 sm:pl-32 sm:px-20">
-            <img
-              src="https://via.placeholder.com/600x400"
-              alt="Trip 1"
-              className="object-cover rounded-lg "
-            />
-            <div className="flex-grow">
-              <h2 className="text-3xl font-montserrat font-semibold mb-4 group transition-all duration-300 ease-in-out hover:text-primary">
+          <div className="flex flex-col md:flex-row gap-6 items-center justify-center px-4 sm:px-12 lg:ml-24">
+            <div className="w-full md:w-1/2">
+              <img
+                src={
+                  upcomingTripData?.image_url ||
+                  "https://via.placeholder.com/600x400"
+                }
+                alt={upcomingTripData?.destination_location}
+                className="w-full h-[250px] sm:h-[300px] object-cover rounded-lg shadow-lg"
+              />
+            </div>
+            <div className="w-full md:w-1/2">
+              <h2 className="text-2xl sm:text-3xl font-montserrat font-semibold mb-4 transition-all duration-300 ease-in-out hover:text-primary">
                 {upcomingTripData?.destination_location || "No upcoming trip"}
               </h2>
-              <p className="text-gray-400 text-lg mb-6">
+              <p className="text-gray-400 text-base sm:text-lg mb-6">
                 <span className="font-semibold">Dates:</span>{" "}
                 <span className="text-gray-200">
                   {upcomingTripData?.departure_date} to{" "}
@@ -126,9 +131,9 @@ const Home = () => {
                 </span>
               </p>
               <Link to={`/my-itineraries`}>
-                <Button variant="gold">
+                <Button variant="gold" className="flex items-center gap-2">
                   <span>View Details</span>
-                  <ArrowRightIcon className="h-6 w-6 transition duration-300 ease-in-out group-hover:translate-x-1" />
+                  <ArrowRightIcon className="h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
                 </Button>
               </Link>
             </div>

@@ -6,17 +6,51 @@ import { Navbar } from "@/components/Navbar";
 import { toast } from "sonner";
 import api from "@/api/interceptor";
 import TripDetails from "@/components/Trip/TripDetails";
-import { getImages } from "@/services/ImageGenerator";
+import { getImage } from "@/services/ImageGenerator";
 
 const ShowTrip = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const formData = location.state?.data;
   const [tripData, setTripData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
-  const formData = location.state?.data;
+  useEffect(() => {
+    const fetchTripAndImage = async () => {
+      try {
+        const result = await chatSession.sendMessage(`
+          Source: ${formData.source}, 
+          Destination: ${formData.destination}, 
+          Budget: ${formData.budgetType}, 
+          No of Adults: ${formData.numberOfAdults}, 
+          No of Children: ${formData.numberOfChildren}, 
+          Departure Date: ${formData.departureDate}, 
+          Return Date: ${formData.returnDate}, 
+          Specific Requirements: ${formData.requirements}
+        `);
+  
+        const response = await result?.response?.text();
+        const data = JSON.parse(response);
+
+        const imageResponse = await getImage(data.destination_location);
+        console.log(imageResponse.url);
+        setTripData({ ...data, image_url: imageResponse.url });
+      } catch (err) {
+        console.error("Error:", err);
+        setError("Failed to generate trip data. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTripAndImage();
+  }, [formData]);
+
+  useEffect(() => {
+    console.log("Updated tripData:", tripData);
+  }, [tripData]);
 
   const formatData = (data) => {
     const formattedActivities = data.itinerary.flatMap((day) =>
@@ -43,7 +77,6 @@ const ShowTrip = () => {
     setSaving(true);
     try {
       const formattedData = formatData(tripData);
-      console.log("Formatted Data to Send:", formattedData);
       await api.post("/api/itineraries/", formattedData);
       navigate("/home");
       toast("Tour trip has been saved!", {
@@ -61,41 +94,6 @@ const ShowTrip = () => {
       setSaving(false);
     }
   };
-
-  useEffect(() => {
-    const fetchTripData = async () => {
-      try {
-        const result = await chatSession.sendMessage(`
-          Source: ${formData.source}, 
-          Destination: ${formData.destination}, 
-          Budget: ${formData.budgetType}, 
-          No of Adults: ${formData.numberOfAdults}, 
-          No of Children: ${formData.numberOfChildren}, 
-          Departure Date: ${formData.departureDate}, 
-          Return Date: ${formData.returnDate}, 
-          Specific Requirements: ${formData.requirements}
-        `);
-
-        const response = await result?.response?.text();
-        let data = JSON.parse(response);
-
-        const imageURL = await getImages(formData.destination);
-        data = {
-          ...data,
-          image: imageURL?.url || "https://via.placeholder.com/600x400",
-        };
-        setTripData(data);
-        console.log("data", data);
-      } catch (err) {
-        console.error("Error generating trip data:", err);
-        setError("Failed to generate trip data. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTripData();
-  }, [formData]);
 
   return (
     <>
