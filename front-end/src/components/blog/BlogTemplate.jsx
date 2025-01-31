@@ -169,6 +169,7 @@ const Template = () => {
                       type="file"
                       multiple
                       accept="image/*"
+                      onChange={(e) => field.onChange(e.target.files)}
                     />
                   </FormControl>
                   <FormMessage />

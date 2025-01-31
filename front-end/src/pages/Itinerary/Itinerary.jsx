@@ -9,7 +9,7 @@ import Image from "@/components/Image";
 import { chatSession } from "@/services/RecommendationGenerator";
 import RecommendationsCard from "@/components/Landing/RecommendationCards";
 import { getImage } from "@/services/ImageGenerator";
-import { Search } from 'lucide-react';
+import { format } from "date-fns";
 
 const Itinerary = () => {
   const [upcomingTrips, setUpcomingTrips] = useState([]);
@@ -50,7 +50,7 @@ const Itinerary = () => {
       try {
         const res = await api.get("/api/itineraries/");
         const allTrips = res?.data || [];
-        const today = new Date().toISOString().split("T")[0];
+        const today = format(new Date(), "yyyy-MM-dd");
         const upcoming = allTrips.filter((trip) => trip.arrival_date >= today);
         const completed = allTrips.filter((trip) => trip.arrival_date < today);
 
@@ -93,7 +93,7 @@ const Itinerary = () => {
         Your Adventures
       </h1>
 
-      <section className="p-8 sm:p-12 bg-black text-white rounded-lg shadow-lg">
+      <div className="p-8 sm:p-12 bg-black text-white rounded-lg shadow-lg">
         <div className="flex flex-col lg:flex-row justify-between items-center gap-8 max-w-7xl mx-auto">
           <div className="text-center lg:text-left flex-grow">
             <h2 className="font-medium text-2xl sm:text-3xl mb-4">
@@ -122,11 +122,11 @@ const Itinerary = () => {
             />
           </div>
         </div>
-      </section>
+      </div>
 
       {upcomingTrips.length > 0 && (
         <>
-          <h2 className="text-center font-montserrat text-2xl sm:text-3xl font-medium mb-8 sm:mb-10">
+          <h2 className="text-center font-light text-3xl mb-10">
             Upcoming Escapes
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-4 px-4 sm:px-8">
@@ -148,7 +148,7 @@ const Itinerary = () => {
 
       {completedTrips.length > 0 && (
         <>
-          <h2 className="text-center font-montserrat text-2xl sm:text-3xl font-medium mt-12 mb-8 sm:mb-10">
+          <h2 className="text-center mt-20 font-light text-3xl mb-10">
             Past Explorations
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-4 px-4 sm:px-8">
@@ -169,8 +169,8 @@ const Itinerary = () => {
       )}
 
       {recommendations.length > 0 && (
-        <div className="mt-20">
-          <h2 className="text-2xl font-semibold text-center mb-6">
+        <div className="mt-12">
+          <h2 className="text-center mt-20 font-light text-3xl mb-10">
             Where You Should Go Next
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4 sm:px-8">

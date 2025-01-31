@@ -42,7 +42,6 @@ const tripSchema = z.object({
 
 const CreateTrip = () => {
   const navigate = useNavigate();
-  const [place, setPlace] = useState("");
 
   const form = useForm({
     resolver: zodResolver(tripSchema),
