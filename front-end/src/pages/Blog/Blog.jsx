@@ -25,6 +25,7 @@ import { ArrowRightIcon } from "@heroicons/react/24/outline";
 const Blog = () => {
   const [blogData, setBlogData] = useState([]);
   const [allData, setAllData] = useState([]);
+  const [topBlogs, setTopBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
@@ -58,6 +59,20 @@ const Blog = () => {
     fetchAllBlogs(value);
   }, [value]);
 
+  useEffect(() => {
+    const fetchTopBlogs = async () => {
+      try {
+        const response = await api.get(`/api/blogs/top-liked/`);
+        console.log(response.data);
+        setTopBlogs(response.data);
+      } catch (error) {
+        setError(error.response?.data || "Failed to fetch blogs");
+      }
+    };
+
+    fetchTopBlogs();
+  }, [])
+  
   return (
     <div className="p-16 mt-8 sm:px-16 lg:px-20">
       <Navbar />
@@ -67,7 +82,7 @@ const Blog = () => {
 
       <h3 className="text-center mt-7 font-light mb-5 text-3xl">Our blogs</h3>
       <section className="mb-10">
-        <ExploreCarousel exploreData={exploreData} />
+        <ExploreCarousel exploreData={topBlogs} />
       </section>
 
       <div className="p-16 pt-4 mt-8">

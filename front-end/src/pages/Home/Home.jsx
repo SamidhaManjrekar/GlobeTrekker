@@ -38,7 +38,10 @@ const Home = () => {
         />
         <div className="absolute top-0 left-0 w-full h-[850px] bg-custom-gradient z-[-1]" />
         <h2 className="font-medium text-6xl text-center opacity-90 pt-[200px] ">
-          Welcome, {userInfo?.name || "Traveler"}
+          Welcome,{" "}
+          {userInfo?.first_name && userInfo?.last_name
+            ? `${userInfo.first_name} ${userInfo.last_name}`
+            : "Traveler"}
         </h2>
         <p className="text-center mt-4 text-lg">
           Your dream journey begins here. Let's craft the perfect plan for your

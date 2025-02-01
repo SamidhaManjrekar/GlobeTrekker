@@ -1,6 +1,8 @@
 from rest_framework import generics, permissions
+from django.db.models import Count
 from .models import Blog, Tag, Comment
-from .serializers import BlogSerializer, TagsSerializer, CommentsSerializer
+from rest_framework.response import Response
+from .serializers import BlogSerializer, TagsSerializer, CommentsSerializer, LikeSerializer, TopBlogSerializer
 from rest_framework.exceptions import PermissionDenied 
 
 class BlogListCreateView(generics.ListCreateAPIView):
@@ -33,6 +35,13 @@ class BlogByTagView(generics.ListAPIView):
     def get_queryset(self):
         tag_id = self.kwargs['tag_id']
         return Blog.objects.filter(tags__id=tag_id)
+    
+class TopLikedBlogsView(generics.ListAPIView):
+    serializer_class = TopBlogSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Blog.objects.annotate(like_count=Count('likes')).order_by('-like_count')[:5]
 
 class AllBlogView(generics.ListAPIView):
     serializer_class = BlogSerializer
@@ -70,3 +79,20 @@ class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.user != obj.author:
             raise PermissionDenied("You do not have permission to modify this comment.")
         return obj
+    
+class BlogLikeToggleView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = LikeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request, pk):
+        blog = Blog.objects.get(id=pk)
+        user = request.user
+
+        if user in blog.likes.all():
+            blog.likes.remove(user)
+            liked = False
+        else:
+            blog.likes.add(user)
+            liked = True
+
+        return Response({"liked": liked, "likes_count": blog.likes.count()})

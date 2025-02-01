@@ -39,6 +39,7 @@ class Blog(models.Model):
     tags = models.ManyToManyField(Tag, related_name='posts', blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blogs')
     gallery = models.ImageField(upload_to='gallery/', blank=True, null=True)
+    likes = models.ManyToManyField(User, related_name="blog_likes", blank=True) 
     
     def __str__(self):
         return self.title

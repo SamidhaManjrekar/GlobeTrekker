@@ -9,4 +9,6 @@ urlpatterns = [
     path('all-blogs/', views.AllBlogView.as_view(), name='all-blogs'),
     path('blogs/<int:blog_id>/comments/', views.CommentListCreateView.as_view(), name='comment-list-create'),
     path('comments/<int:pk>/', views.CommentDetailView.as_view(), name='comment-detail'),
+    path('like/<int:pk>/', views.BlogLikeToggleView.as_view(), name='like_blog'),
+    path('blogs/top-liked/', views.TopLikedBlogsView.as_view(), name='top-liked-blogs'),
 ]

@@ -2,6 +2,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from .models import Itinerary
 from .serializers import ItinerarySerializer, DestinationSerializer
+from django.utils.timezone import now
 
 class ItineraryListCreateView(generics.ListCreateAPIView):
     serializer_class = ItinerarySerializer
@@ -19,7 +20,8 @@ class ItineraryListView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
-        return  Itinerary.objects.filter(user=self.request.user).order_by('departure_date').first()
+        today = now().date() 
+        return Itinerary.objects.filter(user=self.request.user, departure_date__gte=today).order_by('departure_date').first() 
 
 class ItineraryDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ItinerarySerializer

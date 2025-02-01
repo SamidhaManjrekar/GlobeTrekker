@@ -20,10 +20,11 @@ class BlogSerializer(serializers.ModelSerializer):
     tags = serializers.SlugRelatedField(slug_field='name', queryset=Tag.objects.all(), many=True)
     author = serializers.SerializerMethodField()
     comments = CommentsSerializer(many=True, read_only=True) 
+    likes = serializers.SerializerMethodField() 
     
     class Meta:
         model = Blog
-        fields = ['id', 'title', 'content', 'created_at', 'tags', 'author', 'gallery', 'comments']
+        fields = ['id', 'title', 'content', 'created_at', 'tags', 'author', 'gallery', 'comments', 'likes']
         extra_kwargs = {"author": {"read_only": True}}
 
     def create(self, validated_data):
@@ -33,5 +34,33 @@ class BlogSerializer(serializers.ModelSerializer):
         return blog
     
     def get_author(self, obj):
-        full_name = f"{obj.author.first_name} {obj.author.last_name}".strip()
-        return full_name if full_name else obj.author.username
+        return {
+        "id": obj.author.id, 
+        "name": f"{obj.author.first_name} {obj.author.last_name}".strip() or obj.author.username,
+        }
+        
+    def get_likes(self, obj):
+        return obj.likes.count()
+        
+class LikeSerializer(serializers.ModelSerializer):
+    liked = serializers.SerializerMethodField()
+    likes_count = serializers.IntegerField(source="likes.count", read_only=True)
+
+    class Meta:
+        model = Blog
+        fields = ["id", "liked", "likes_count"]
+
+    def get_liked(self, obj):
+        user = self.context.get("request").user
+        return user in obj.likes.all()
+    
+
+class TopBlogSerializer(serializers.ModelSerializer):
+    likes = serializers.SerializerMethodField() 
+    
+    class Meta:
+        model = Blog
+        fields = ['id', 'title', 'likes']
+        
+    def get_likes(self, obj):
+        return obj.likes.count()

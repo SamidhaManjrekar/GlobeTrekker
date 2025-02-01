@@ -20,7 +20,8 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 const formTemplate = z.object({
-  name: z.string().min(1, "Name is required"),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
   userName: z.string().min(1, "Username is required"),
   email: z.string().email("Invalid email address").min(1, "Email is required"),
 });
@@ -34,7 +35,8 @@ const Profile = () => {
   const form = useForm({
     resolver: zodResolver(formTemplate),
     defaultValues: {
-      name: userInfo?.name || "",
+      firstName: userInfo?.first_name || "",
+      lastName: userInfo?.last_name || "",
       userName: userInfo?.username || "",
       email: userInfo?.email || "",
     },
@@ -43,7 +45,8 @@ const Profile = () => {
   useEffect(() => {
     if (userInfo) {
       form.reset({
-        name: userInfo.name || "",
+        firstName: userInfo.first_name || "",
+        lastName: userInfo.last_name || "",
         userName: userInfo.username || "",
         email: userInfo.email || "",
       });
@@ -54,7 +57,8 @@ const Profile = () => {
   const handleEdit = () => {
     setEdit(false);
     form.reset({
-      name: userInfo?.name || "",
+      firstName: userInfo?.first_name || "",
+      lastName: userInfo?.last_name || "",
       userName: userInfo?.username || "",
       email: userInfo?.email || "",
     });
@@ -62,7 +66,12 @@ const Profile = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await api.patch("/api/users/me/", data);
+      const response = await api.patch("/api/users/me/", {
+        first_name: data.firstName,
+        last_name: data.lastName,
+        username: data.userName,
+        email: data.email,
+      });
       dispatch(setUser(response.data));
       toast.success("User Info Updated Successfully!");
       setEdit(true);
@@ -81,12 +90,12 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen flex justify-center items-center overflow-x-hidden"> 
-      <Navbar/>
+    <div className="min-h-screen flex justify-center items-center overflow-x-hidden">
+      <Navbar />
       <div className="m-16 mt-24 flex flex-col md:flex-row gap-8 md:gap-16 w-full mx-4 md:mx-20 justify-center items-center">
         <div className="flex justify-center items-center">
           <Avatar className="bg-gold flex justify-center items-center uppercase w-52 h-52 text-6xl">
-            {userInfo.name[0] || "P"}
+            {userInfo?.first_name?.charAt(0) || "P"}
           </Avatar>
         </div>
 
@@ -95,17 +104,38 @@ const Profile = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
-                name="name"
+                name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="name" className="text-lg">
-                      Name
+                    <FormLabel htmlFor="firstName" className="text-lg">
+                      First Name
                     </FormLabel>
                     <FormControl>
                       <Input
                         disabled={edit}
-                        id="name"
-                        placeholder="Enter your name"
+                        id="firstName"
+                        placeholder="Enter your first name"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="lastName" className="text-lg">
+                      Last Name
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={edit}
+                        id="lastName"
+                        placeholder="Enter your last name"
                         {...field}
                       />
                     </FormControl>
@@ -120,7 +150,7 @@ const Profile = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel htmlFor="userName" className="text-lg">
-                      UserName
+                      Username
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -155,7 +185,7 @@ const Profile = () => {
                   </FormItem>
                 )}
               />
-              
+
               {edit ? (
                 <Button variant="gold" onClick={handleEdit} type="button">
                   Edit

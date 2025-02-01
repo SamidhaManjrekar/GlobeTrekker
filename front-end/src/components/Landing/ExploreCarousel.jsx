@@ -50,11 +50,13 @@ const ExploreCarousel = ({ exploreData }) => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-60"></div>
                   <div className="absolute inset-0 flex flex-col justify-center items-center text-white p-4">
-                    <h3 className="text-2xl font-semibold text-center">
-                      {data.title}
-                    </h3>
-                    <p className="text-center mb-4">{data.description}</p>
-                    <Link to={data.link}>
+                    <div className="h-3/5 flex flex-col justify-center items-center">
+                      <h3 className="text-2xl font-semibold text-center">
+                        {data.title}
+                      </h3>
+                      <p className="text-center">{data.description}</p>
+                    </div>
+                    <Link to={`/blog/${data.id}`|| data.link}>
                       <Button variant="outline" className="mb-5 group">
                         <span>Read More</span>
                         <ArrowRightIcon className="h-6 w-6 transition duration-300 ease-in-out group-hover:translate-x-1" />

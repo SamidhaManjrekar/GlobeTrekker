@@ -11,21 +11,32 @@ const Signup = () => {
     console.log("Signup Data:", data);
     try {
       const res = await api.post("/api/signup/", data);
+      console.log(res.data);
       toast.success("Account created successfully! Please log in.");
       navigate("/signin");
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Sign up failed:", error.response?.data || error.message);
+      toast.error("Sign up failed. Please try again.");
     }
   };
 
   const formFields = [
     {
-      name: "name",
+      name: "first_name",
       type: "text",
-      placeholder: "Enter your name",
+      placeholder: "Enter your first name",
       validation: z
         .string()
-        .min(1, "Name is required")
+        .min(1, "First name is required")
+        .regex(/^[a-zA-Z\s]+$/, "Name can only contain letters and spaces"),
+    },
+    {
+      name: "last_name",
+      type: "text",
+      placeholder: "Enter your last name",
+      validation: z
+        .string()
+        .min(1, "Last name is required")
         .regex(/^[a-zA-Z\s]+$/, "Name can only contain letters and spaces"),
     },
     {

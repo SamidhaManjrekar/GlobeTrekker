@@ -17,11 +17,15 @@ const Itinerary = () => {
   const [recommendations, setRecommendations] = useState([]);
 
   const getRecommendations = async (destinations) => {
-    if (!destinations || destinations.length === 0) {
-      return;
-    }
     try {
-      const result = await chatSession.sendMessage(destinations);
+      let result;
+      if (!destinations || destinations.length === 0) {
+        result = await chatSession.sendMessage(
+          "No destinations provided"
+        );
+      } else {
+        result = await chatSession.sendMessage(destinations);
+      }
       const data = JSON.parse(result?.response?.text());
 
       const recommendations = await Promise.all(

@@ -9,10 +9,10 @@ import {
 } from "../ui/card";
 import ExploreCarousel from "../Landing/ExploreCarousel";
 import { exploreData } from "@/data/exploreData";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { Navbar } from "../Navbar";
 import api from "@/api/interceptor";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, ThumbsUp } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   AlertDialog,
@@ -40,6 +40,8 @@ const Posts = () => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [submit, setSubmit] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,6 +61,8 @@ const Posts = () => {
       try {
         const res = await api.get(`/api/blogs/${id}/`);
         setData(res.data);
+        setLikeCount(res.data.likes || 0);
+        setLiked(res.data.liked_by_current_user || false);
 
         const commentsData = await api.get(`/api/blogs/${id}/comments/`);
         setComments(commentsData.data);
@@ -74,14 +78,12 @@ const Posts = () => {
 
   const handleDelete = async () => {
     try {
-      await api.delete(`/api/blogs/${id}/`);
-      setIsAlertOpen(false);
-      navigate("/blog");
-      toast.success("Blog post deleted successfully");
+      const res = await api.post(`/api/like/${id}/`);
+      setLiked(res.data.liked);
+      setLikeCount(res.data.like_count);
     } catch (error) {
-      console.error("Error deleting blog post:", error);
-      setIsAlertOpen(false);
-      toast.error("Failed to delete the blog post");
+      console.error("Error liking post:", error);
+      toast.error("Failed to like the post");
     }
   };
 
@@ -104,6 +106,18 @@ const Posts = () => {
     }
   };
 
+  const handleLike = async () => {
+    try {
+      const res = await api.post(`/api/like/${id}/`);
+      console.log(res.data);
+      setLiked(res.data.liked);
+      setLikeCount(res.data.likes_count);
+    } catch (error) {
+      console.error("Error liking post:", error);
+      toast.error("Failed to like the post");
+    }
+  };
+
   return (
     <div className="mt-12 py-10 px-4 md:px-10 lg:px-20 rounded-lg">
       <Navbar />
@@ -120,7 +134,7 @@ const Posts = () => {
               </h1>
             </CardTitle>
             <div className="absolute right-4 top-2">
-              {currentUser?.name === data?.author && (
+              {currentUser?.id === data?.author?.id && (
                 <div className="flex gap-4">
                   <Button variant="gold" onClick={() => navigate(`/blog-edit/${id}`)}>
                     <Pencil />
@@ -154,7 +168,7 @@ const Posts = () => {
             </div>
             <div className="flex flex-col md:flex-row md:justify-between items-center text-sm text-gray-600">
               <span>
-                <strong>By:</strong> {data?.author || "Unknown"}
+                <strong>By:</strong> {data?.author?.name || "Unknown"}
               </span>
               <span>
                 <strong>Published On:</strong>{" "}
@@ -191,6 +205,17 @@ const Posts = () => {
               }}
             />
           </CardContent>
+
+          <CardFooter className="flex justify-between items-center">
+            <div className="flex gap-3 items-center">
+              <Button variant="gold" onClick={handleLike}>
+                <ThumbsUp
+                  className={`w-6 h-6 ${liked ? "text-black" : "text-gray-500"}`}
+                />
+              </Button>
+              <span className="text-lg font-semibold">{likeCount}</span>
+            </div>
+          </CardFooter>
 
           <CardFooter>
             <div className="mt-12 w-full">
