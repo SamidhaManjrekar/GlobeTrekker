@@ -44,19 +44,19 @@ const ExploreCarousel = ({ exploreData }) => {
               <div className="p-1">
                 <div className="relative rounded-lg overflow-hidden">
                   <Image
-                    src={data.image}
+                    src={data.image || "travel.jpg"}
                     alt={data.title}
                     className="w-full h-64 object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-60"></div>
                   <div className="absolute inset-0 flex flex-col justify-center items-center text-white p-4">
                     <div className="h-3/5 flex flex-col justify-center items-center">
-                      <h3 className="text-2xl font-semibold text-center">
+                      <h3 className="text-2xl font-medium font-montserrat text-center">
                         {data.title}
                       </h3>
                       <p className="text-center">{data.description}</p>
                     </div>
-                    <Link to={`/blog/${data.id}`|| data.link}>
+                    <Link to={data.link ? data.link : `/blog/${data.id}`}>
                       <Button variant="outline" className="mb-5 group">
                         <span>Read More</span>
                         <ArrowRightIcon className="h-6 w-6 transition duration-300 ease-in-out group-hover:translate-x-1" />
