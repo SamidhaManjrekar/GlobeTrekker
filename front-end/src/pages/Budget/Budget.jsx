@@ -71,39 +71,35 @@ const Budget = () => {
         <Progress value={(budgetUsed / totalBudget) * 100} />
       </div>
 
-      <h3 className="text-center mt-16 font-light mb-5 text-3xl">
-        Spendings till now
-      </h3>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Date</TableHead>
-            <TableHead>Amount</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Payment</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {spendings.length > 0 ? (
-            spendings.map((spending, index) => (
-              <TableRow key={index}>
-                <TableCell>{spending.date}</TableCell>
-                <TableCell>${spending.amount}</TableCell>
-                <TableCell>{spending.type}</TableCell>
-                <TableCell>{spending.description}</TableCell>
-                <TableCell>{spending.paymentMethod}</TableCell>
+      {spendings.length > 0 && (
+        <div>
+          <h3 className="text-center mt-16 font-light mb-5 text-3xl">
+            Spendings till now
+          </h3>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead>Payment</TableHead>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan="5" className="text-center">
-                No spendings recorded yet.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            </TableHeader>
+            <TableBody>
+              {spendings.map((spending, index) => (
+                <TableRow key={index}>
+                  <TableCell>{spending.date}</TableCell>
+                  <TableCell>${spending.amount}</TableCell>
+                  <TableCell>{spending.type}</TableCell>
+                  <TableCell>{spending.description}</TableCell>
+                  <TableCell>{spending.paymentMethod}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
 
       <h3 className="text-center mt-16 font-light mb-5 text-3xl">
         Add Spendings
