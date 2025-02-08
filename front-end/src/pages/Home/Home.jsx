@@ -123,7 +123,7 @@ const Home = () => {
               />
             </div>
             <div className="w-full md:w-1/2">
-              <h2 className="text-2xl sm:text-3xl font-montserrat font-semibold mb-4 transition-all duration-300 ease-in-out hover:text-primary">
+              <h2 className="text-2xl sm:text-3xl font-montserrat font-semibold mb-4">
                 {upcomingTripData?.destination_location || "No upcoming trip"}
               </h2>
               <p className="text-gray-400 text-base sm:text-lg mb-6">

@@ -32,7 +32,7 @@ const FormSchema = z.object({
 const Budget = () => {
   const totalBudget = 20200;
   const [spendings, setSpendings] = useState([]);
-  const [budgetUsed, setBudgetUsed] = useState(200);
+  const [budgetUsed, setBudgetUsed] = useState(0);
 
   const {
     register,
