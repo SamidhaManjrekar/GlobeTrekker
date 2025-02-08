@@ -6,7 +6,6 @@
 - **Personalized Itinerary Generation**: AI-driven recommendations based on user preferences.
 - **Budget Optimization**: Smart cost management for Economy, Standard, and Luxury travel tiers.
 - **Attraction & Activity Suggestions**: Tailored recommendations for local experiences.
-- **Real-Time Travel Cost Estimation**: Estimated expenses based on seasonality and location trends.
 - **User Preferences & Customization**: Allows users to input specific requirements for tailored results.
 - **Travel Blog**: Users can read and contribute travel experiences and tips.
 
@@ -14,7 +13,6 @@
 - **Frontend**: React (Vite) with Tailwind CSS & Framer Motion
 - **Backend**: Django with REST API
 - **Database**: PostgreSQL
-- **Machine Learning**: Collaborative Filtering, Clustering, and Cost Trend Predictions
 - **AI Integration**: Gemini API for travel itinerary suggestions
 - **Image Optimization**: ImageKit for efficient image hosting
 
@@ -25,10 +23,9 @@
    - Number of adults & children
    - Budget tier (Economy, Standard, Luxury)
    - Specific preferences (e.g., adventure, cultural experiences)
-2. **AI Processing**: The system generates an itinerary using AI-based recommendations and ML algorithms.
-3. **Itinerary Display**: The user receives a structured travel plan, including attractions, accommodation, and cost estimates.
-4. **Customization & Optimization**: Users can tweak their itinerary and get budget-friendly alternatives.
-5. **Travel Blog Access**: Users can explore travel stories, tips, and recommendations from other travelers.
+2. **AI Processing**: The system generates an itinerary using AI-based recommendations.
+3. **Itinerary Display**: The user receives a structured travel plan, including attractions, accommodation etc.
+4. **Travel Blog Access**: Users can explore travel stories, tips, and recommendations from other travelers.
 
 ## 📌 Installation & Setup
 ### 1. Clone the Repository
@@ -58,7 +55,6 @@ npm run dev
 - **Real-time Flight & Hotel API Integration**
 - **Multi-language Support**
 - **Enhanced AI Recommendations with RAG/LangChain**
-- **Offline Mode for Itinerary Viewing**
 
 ## 📜 License
 This project is licensed under the MIT License.
