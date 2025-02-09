@@ -19,17 +19,19 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowRightIcon } from "lucide-react";
+import api from "@/api/interceptor";
+import { format } from "date-fns";
 
 const FormSchema = z.object({
   amount: z.coerce.number().min(1, "Amount must be greater than 0"),
-  type: z.string().nonempty("Please select a spending type"),
+  category: z.string().nonempty("Please select a spending category"),
   description: z.string().nonempty("Description is required"),
-  paymentMethod: z.string().nonempty("Select a payment method"),
+  payment_method: z.string().nonempty("Select a payment method"),
 });
 
-const Budget = () => {
+const Budget = ({id}) => {
   const totalBudget = 20200;
   const [spendings, setSpendings] = useState([]);
   const [budgetUsed, setBudgetUsed] = useState(0);
@@ -42,22 +44,42 @@ const Budget = () => {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(FormSchema),
-    defaultValues: { amount: "", type: "", description: "", paymentMethod: "" },
+    defaultValues: { amount: "", category: "", description: "", payment_method: "" },
   });
 
-  const onSubmit = (data) => {
-    console.log("data", data);
-    console.log("spending", spendings);
-    setSpendings([
-      ...spendings,
-      { ...data, date: new Date().toLocaleDateString() },
-    ]);
+
+  const onSubmit = async (data) => {
+    const formattedDate = format(new Date(), "yyyy-MM-dd"); 
+    data = { ...data, itinerary: id, date: formattedDate };
+  
+    try {
+      await api.post(`api/itineraries/${id}/expenses/`, data);
+    } catch (e) {
+      console.log(e.message);
+    }
+  
+    setSpendings([...spendings, data]); 
     setBudgetUsed((prev) => prev + Number(data.amount));
     reset();
   };
 
+  useEffect(() => {
+    const fetchExpenses = async() => {
+      try{
+        const res = await api.get(`api/itineraries/${id}/expenses/`);
+        console.log("data",res.data);
+        setSpendings(res.data);
+      }catch(e){
+        console.log(e.message);
+      }
+    }
+
+    fetchExpenses();
+  }, [])
+  
+
   return (
-    <div className="p-16 mt-8 sm:px-16 lg:px-20">
+    <div className="mt-14">
       <div className="mb-6">
         <div className="flex justify-between text-lg font-montserrat">
           <div>Budget Used: ${budgetUsed}</div>
@@ -76,7 +98,7 @@ const Budget = () => {
               <TableRow>
                 <TableHead>Date</TableHead>
                 <TableHead>Amount</TableHead>
-                <TableHead>Type</TableHead>
+                <TableHead>Category</TableHead>
                 <TableHead>Description</TableHead>
                 <TableHead>Payment</TableHead>
               </TableRow>
@@ -86,9 +108,9 @@ const Budget = () => {
                 <TableRow key={index}>
                   <TableCell>{spending.date}</TableCell>
                   <TableCell>${spending.amount}</TableCell>
-                  <TableCell>{spending.type}</TableCell>
+                  <TableCell>{spending.category}</TableCell>
                   <TableCell>{spending.description}</TableCell>
-                  <TableCell>{spending.paymentMethod}</TableCell>
+                  <TableCell>{spending.payment_method}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -104,7 +126,7 @@ const Budget = () => {
           <div>
             <label className="text-main">Amount</label>
             <Input
-              type="number"
+              category="number"
               placeholder="Enter amount"
               {...register("amount")}
             />
@@ -112,10 +134,10 @@ const Budget = () => {
           </div>
 
           <div>
-            <label className="text-main">Spending Type</label>
-            <Select onValueChange={(value) => setValue("type", value)}>
+            <label className="text-main">Spending Category</label>
+            <Select onValueChange={(value) => setValue("category", value)}>
               <SelectTrigger>
-                <SelectValue placeholder="Select Spending Type" />
+                <SelectValue placeholder="Select Spending category" />
               </SelectTrigger>
               <SelectContent>
                 {[
@@ -132,13 +154,13 @@ const Budget = () => {
                 ))}
               </SelectContent>
             </Select>
-            <p className="text-red-500 text-sm">{errors.type?.message}</p>
+            <p className="text-red-500 text-sm">{errors.category?.message}</p>
           </div>
 
           <div>
             <label className="text-main">Description</label>
             <Input
-              type="text"
+              category="text"
               placeholder="Short description"
               {...register("description")}
             />
@@ -149,7 +171,7 @@ const Budget = () => {
 
           <div>
             <label className="text-main">Payment Method</label>
-            <Select onValueChange={(value) => setValue("paymentMethod", value)}>
+            <Select onValueChange={(value) => setValue("payment_method", value)}>
               <SelectTrigger>
                 <SelectValue placeholder="Select Payment Method" />
               </SelectTrigger>
@@ -162,13 +184,13 @@ const Budget = () => {
               </SelectContent>
             </Select>
             <p className="text-red-500 text-sm">
-              {errors.paymentMethod?.message}
+              {errors.payment_method?.message}
             </p>
           </div>
         </div>
 
         <div className="flex justify-center group mt-8">
-          <Button variant="gold" type="submit" className="px-5">
+          <Button variant="gold" category="submit" className="px-5">
             Add Spending
             <ArrowRightIcon className="h-6 w-6 transition duration-300 ease-in-out group-hover:translate-x-1" />
           </Button>
