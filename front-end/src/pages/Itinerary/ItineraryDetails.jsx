@@ -144,7 +144,7 @@ const ItineraryDetails = () => {
       )}
 
       <Tabs defaultValue="itinerary">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-2 print:hidden">
           <TabsTrigger value="itinerary">Itinerary</TabsTrigger>
           <TabsTrigger value="budget">Budget</TabsTrigger>
         </TabsList>

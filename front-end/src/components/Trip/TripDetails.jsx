@@ -130,7 +130,7 @@ const TripDetails = ({ tripData }) => {
                 <TableCell>{flight.airline}</TableCell>
                 <TableCell>{flight.departure_time}</TableCell>
                 <TableCell>{flight.arrival_time}</TableCell>
-                <TableCell>${flight.price}</TableCell>
+                <TableCell>{flight.price}</TableCell>
               </TableRow>
             ))}
           </TableBody>
