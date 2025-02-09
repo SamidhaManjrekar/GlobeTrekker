@@ -84,3 +84,8 @@ class ItinerarySerializer(serializers.ModelSerializer):
                 itinerary.note.add(note_instance)
                 
         return itinerary
+
+class BudgetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Itinerary
+        fields = ['total_budget']

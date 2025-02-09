@@ -6,4 +6,5 @@ urlpatterns = [
     path('itineraries/upcoming/', views.ItineraryListView.as_view() , name='itinerary-list-first'),   
     path('itineraries/<int:pk>/', views.ItineraryDetailView.as_view() , name='itinerary-detail'), 
     path('itineraries/destinations/', views.ItineraryDestinationsView.as_view() , name='itinerary-destinations'), 
+    path('itineraries/budget/<int:pk>/', views.BudgetUpdateView.as_view() , name='budget-update'), 
 ]

@@ -15,7 +15,6 @@ const Itinerary = () => {
   const [upcomingTrips, setUpcomingTrips] = useState([]);
   const [completedTrips, setCompletedTrips] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
-  const [budget, setBudget] = useState(0);
 
   const getRecommendations = async (destinations) => {
     try {

@@ -31,10 +31,9 @@ const FormSchema = z.object({
   payment_method: z.string().nonempty("Select a payment method"),
 });
 
-const Budget = ({id}) => {
-  const totalBudget = 20200;
+const Budget = ({ id, budget }) => {
+  const totalBudget = budget;
   const [spendings, setSpendings] = useState([]);
-  const [budgetUsed, setBudgetUsed] = useState(0);
 
   const {
     register,
@@ -47,43 +46,42 @@ const Budget = ({id}) => {
     defaultValues: { amount: "", category: "", description: "", payment_method: "" },
   });
 
-
   const onSubmit = async (data) => {
-    const formattedDate = format(new Date(), "yyyy-MM-dd"); 
+    const formattedDate = format(new Date(), "yyyy-MM-dd");
     data = { ...data, itinerary: id, date: formattedDate };
-  
+
     try {
       await api.post(`api/itineraries/${id}/expenses/`, data);
     } catch (e) {
       console.log(e.message);
     }
-  
-    setSpendings([...spendings, data]); 
-    setBudgetUsed((prev) => prev + Number(data.amount));
+
+    setSpendings([...spendings, data]);
     reset();
   };
 
   useEffect(() => {
-    const fetchExpenses = async() => {
-      try{
+    const fetchExpenses = async () => {
+      try {
         const res = await api.get(`api/itineraries/${id}/expenses/`);
-        console.log("data",res.data);
         setSpendings(res.data);
-      }catch(e){
+      } catch (e) {
         console.log(e.message);
       }
-    }
+    };
 
     fetchExpenses();
-  }, [])
-  
+  }, []);
+
+  const budgetUsed = spendings.reduce((sum, item) => sum + Number(item.amount), 0);
+  const budgetRemaining = totalBudget - budgetUsed;
 
   return (
     <div className="mt-14">
       <div className="mb-6">
         <div className="flex justify-between text-lg font-montserrat">
-          <div>Budget Used: ${budgetUsed}</div>
-          <div>Budget Remaining: ${totalBudget - budgetUsed}</div>
+          <div>Budget Used: ${budgetUsed.toFixed(2)}</div>
+          <div>Budget Remaining: ${budgetRemaining.toFixed(2)}</div>
         </div>
         <Progress value={(budgetUsed / totalBudget) * 100} />
       </div>
