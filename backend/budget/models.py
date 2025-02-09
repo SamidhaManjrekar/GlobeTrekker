@@ -1,3 +1,40 @@
 from django.db import models
-
+from django.contrib.auth.models import User
+from itinerary.models import Itinerary
 # Create your models here.
+
+class Budget(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="budgets")
+    itinerary = models.ForeignKey(Itinerary, on_delete=models.CASCADE, related_name="budgets")
+    total_budget = models.DecimalField(max_digits=10, decimal_places=2)
+    budget_used = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    
+    def __str__(self):
+        return f"Budget for {self.itinerary}"
+
+class Expense(models.Model):
+    category_choices = [
+        ("Food", "Food"),
+        ("Transport", "Transport"),
+        ("Accommodation", "Accommodation"),
+        ("Entertainment", "Entertainment"),
+        ("Shopping", "Shopping"),
+        ("Others", "Others"),
+    ]
+
+    payment_method_choices = [
+        ("Cash", "Cash"),
+        ("Card", "Card"),
+        ("UPI", "UPI"),
+        ("Bank Transfer", "Bank Transfer"),
+    ]
+
+    budget = models.ForeignKey(Budget, on_delete=models.CASCADE, related_name="expenses")
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    category = models.CharField(max_length=20, choices=category_choices)
+    payment_method = models.CharField(max_length=20, choices=payment_method_choices)
+    description = models.TextField()
+    date = models.DateField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Expense for {self.category}"
