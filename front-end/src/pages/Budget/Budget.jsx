@@ -1,4 +1,3 @@
-import { Navbar } from "@/components/Navbar";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -21,6 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import React, { useState } from "react";
+import { ArrowRightIcon } from "lucide-react";
 
 const FormSchema = z.object({
   amount: z.coerce.number().min(1, "Amount must be greater than 0"),
@@ -58,11 +58,6 @@ const Budget = () => {
 
   return (
     <div className="p-16 mt-8 sm:px-16 lg:px-20">
-      <Navbar />
-      <h2 className="text-center font-montserrat text-4xl font-medium mb-10">
-        Budget for your trip
-      </h2>
-
       <div className="mb-6">
         <div className="flex justify-between text-lg font-montserrat">
           <div>Budget Used: ${budgetUsed}</div>
@@ -172,9 +167,10 @@ const Budget = () => {
           </div>
         </div>
 
-        <div className="flex justify-center mt-8">
+        <div className="flex justify-center group mt-8">
           <Button variant="gold" type="submit" className="px-5">
             Add Spending
+            <ArrowRightIcon className="h-6 w-6 transition duration-300 ease-in-out group-hover:translate-x-1" />
           </Button>
         </div>
       </form>

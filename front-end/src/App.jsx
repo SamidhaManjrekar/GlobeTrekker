@@ -13,7 +13,6 @@ import Template from './components/blog/BlogTemplate';
 import Itinerary from './pages/Itinerary/Itinerary';
 import ItineraryDetails from './pages/Itinerary/ItineraryDetails';
 import Profile from './pages/Profile/Profile';
-import Budget from './pages/Budget/Budget';
 
 function Logout(){
   localStorage.clear()
@@ -37,7 +36,6 @@ const routes = (
       <Route path="/my-itineraries" element={<ProtectedRoutes><Itinerary/></ProtectedRoutes>} />
       <Route path="/itinerary/:id" element={<ProtectedRoutes><ItineraryDetails/></ProtectedRoutes>} />
       <Route path="/profile" element={<ProtectedRoutes><Profile/></ProtectedRoutes>} />
-      <Route path="/budget" element={<ProtectedRoutes><Budget/></ProtectedRoutes>} />
     </Routes>
   </Router>
 

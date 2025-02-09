@@ -3,8 +3,10 @@ import { Navbar } from "@/components/Navbar";
 import TripDetails from "@/components/Trip/TripDetails";
 import { Button } from "@/components/ui/button";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Budget from "../Budget/Budget";
 
 const formatData = (data) => {
   const days = data.activities.reduce((acc, activity) => {
@@ -69,16 +71,33 @@ const ItineraryDetails = () => {
   return (
     <div className="p-16 mt-4 sm:px-16 lg:px-20 relative">
       <Navbar />
-      <h2 className="font-montserrat font-medium text-center text-3xl mb-7">
+      <h2 className="font-montserrat font-medium text-center text-3xl mb-12">
         Trip To {data.destination_location}
       </h2>
-      <TripDetails tripData={data} />
-      <div className="flex justify-center group">
-        <Button className="mt-7 px-10 flex print:hidden" variant="gold" onClick={handleDownload}>
-          Download
-          <ArrowRightIcon className="h-6 w-6 transition duration-300 ease-in-out group-hover:translate-x-1" />
-        </Button>
-      </div>
+      <Tabs defaultValue="itinerary">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="itinerary">Itinerary</TabsTrigger>
+          <TabsTrigger value="budget">Budget</TabsTrigger>
+        </TabsList>
+        <TabsContent value="itinerary">
+          <div className="mt-10">
+            <TripDetails tripData={data} />
+            <div className="flex justify-center group">
+              <Button
+                className="mt-7 px-10 flex print:hidden"
+                variant="gold"
+                onClick={handleDownload}
+              >
+                Download
+                <ArrowRightIcon className="h-6 w-6 transition duration-300 ease-in-out group-hover:translate-x-1" />
+              </Button>
+            </div>
+          </div>
+        </TabsContent>
+        <TabsContent value="budget">
+          <Budget/>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
