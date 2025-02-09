@@ -19,6 +19,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
+import BudgetReport from "../Budget/BudgetReport";
 
 const formatData = (data) => {
   const days = data.activities.reduce((acc, activity) => {
@@ -63,6 +64,7 @@ const ItineraryDetails = () => {
   const [data, setData] = useState({});
   const [budget, setBudget] = useState("0.00");
   const [isBudgetAlertOpen, setIsBudgetAlertOpen] = useState(false);
+  const [isTripComplete, setIsTripComplete] = useState(false);
 
   const handleDownload = () => {
     window.print();
@@ -79,6 +81,10 @@ const ItineraryDetails = () => {
         if (formattedData.total_budget === "0.00") {
           setIsBudgetAlertOpen(true);
         }
+
+        if (new Date(formattedData.arrival_date) < new Date()) {
+          setIsTripComplete(true);
+        }
       } catch (error) {
         console.error("Error fetching itinerary:", error);
       }
@@ -86,12 +92,14 @@ const ItineraryDetails = () => {
     fetchItinerary();
   }, [id]);
 
-  const handleSetBudget = async() => {
-    try{
-      const res = await api.patch(`/api/itineraries/budget/${id}/`, { total_budget: budget });
+  const handleSetBudget = async () => {
+    try {
+      const res = await api.patch(`/api/itineraries/budget/${id}/`, {
+        total_budget: budget,
+      });
       console.log(res.data);
       setIsBudgetAlertOpen(false);
-    }catch(error){
+    } catch (error) {
       console.log(error.message);
     }
   };
@@ -103,27 +111,33 @@ const ItineraryDetails = () => {
         Trip To {data.destination_location}
       </h2>
 
-      {isBudgetAlertOpen && (
-        <AlertDialog open={isBudgetAlertOpen} onOpenChange={setIsBudgetAlertOpen}>
+      {isBudgetAlertOpen && !isTripComplete && (
+        <AlertDialog
+          open={isBudgetAlertOpen}
+          onOpenChange={setIsBudgetAlertOpen}
+        >
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Set Your Trip Budget</AlertDialogTitle>
               <AlertDialogDescription>
-                Your budget is currently set to $0.00. Please enter your budget to continue.
+                Your budget is currently set to $0.00. Please enter your budget
+                to continue.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <div className="flex gap-3 justify-center items-center">
               $
-              <Input 
-                type="number" 
-                placeholder="Enter your budget" 
+              <Input
+                type="number"
+                placeholder="Enter your budget"
                 value={budget}
                 onChange={(e) => setBudget(e.target.value)}
               />
             </div>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleSetBudget}>Set Budget</AlertDialogAction>
+              <AlertDialogAction onClick={handleSetBudget}>
+                Set Budget
+              </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
@@ -150,7 +164,11 @@ const ItineraryDetails = () => {
           </div>
         </TabsContent>
         <TabsContent value="budget">
-          <Budget id={id} budget={budget} />
+          {isTripComplete ? (
+            <BudgetReport id={id} />
+          ) : (
+            <Budget id={id} budget={budget} />
+          )}
         </TabsContent>
       </Tabs>
     </div>
