@@ -48,10 +48,6 @@ const ShowTrip = () => {
     fetchTripAndImage();
   }, [formData]);
 
-  useEffect(() => {
-    console.log("Updated tripData:", tripData);
-  }, [tripData]);
-
   const formatData = (data) => {
     const formattedActivities = data.itinerary.flatMap((day) =>
       day.activities.map((activity) => ({
