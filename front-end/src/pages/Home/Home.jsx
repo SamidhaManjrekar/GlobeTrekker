@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 import Popular from "@/components/Landing/Popular";
 import api from "@/api/interceptor";
 import Footer from "@/components/Landing/Footer";
-import Map from "@/components/Landing/Map";
 import Image from "@/components/Image";
 
 const Home = () => {
@@ -111,7 +110,7 @@ const Home = () => {
           <h2 className="font-medium text-2xl sm:text-3xl mb-6 sm:mb-10 text-center">
             Your Upcoming Trip
           </h2>
-          <div className="flex flex-col md:flex-row gap-6 items-center justify-center px-4 sm:px-12 lg:ml-24">
+          <div className="flex flex-col md:flex-row gap-12 items-center justify-center px-4 sm:px-12 lg:ml-24">
             <div className="w-full md:w-1/2">
               <img
                 src={
