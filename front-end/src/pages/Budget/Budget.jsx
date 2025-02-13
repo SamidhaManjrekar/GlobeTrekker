@@ -31,9 +31,10 @@ const FormSchema = z.object({
   payment_method: z.string().nonempty("Select a payment method"),
 });
 
-const Budget = ({ id, budget }) => {
-  const totalBudget = budget;
+const Budget = ({ id }) => {
+  const [totalBudget, setTotalBudget] = useState("0.00");
   const [spendings, setSpendings] = useState([]);
+  const [budget, setBudget] = useState("");
 
   const {
     register,
@@ -43,22 +44,13 @@ const Budget = ({ id, budget }) => {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(FormSchema),
-    defaultValues: { amount: "", category: "", description: "", payment_method: "" },
+    defaultValues: {
+      amount: "",
+      category: "",
+      description: "",
+      payment_method: "",
+    },
   });
-
-  const onSubmit = async (data) => {
-    const formattedDate = format(new Date(), "yyyy-MM-dd");
-    data = { ...data, itinerary: id, date: formattedDate };
-
-    try {
-      await api.post(`api/itineraries/${id}/expenses/`, data);
-    } catch (e) {
-      console.log(e.message);
-    }
-
-    setSpendings([...spendings, data]);
-    reset();
-  };
 
   useEffect(() => {
     const fetchExpenses = async () => {
@@ -70,8 +62,64 @@ const Budget = ({ id, budget }) => {
       }
     };
 
-    fetchExpenses();
-  }, []);
+    if (id) fetchExpenses();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchBudget = async () => {
+      try {
+        const res = await api.get(`/api/itineraries/budget/${id}/`);
+        setTotalBudget(res.data.total_budget);
+      } catch (e) {
+        console.log(e.message);
+      }
+    };
+
+    fetchBudget();
+  }, [id]);
+
+  const handleSetBudget = async () => {
+    try {
+      await api.patch(`/api/itineraries/budget/${id}/`, {
+        total_budget: parseFloat(budget),
+      });
+      setTotalBudget(parseFloat(budget));
+      setBudget("");
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const onSubmit = async (data) => {
+    const formattedDate = format(new Date(), "yyyy-MM-dd");
+    const spendingData = { ...data, itinerary: id, date: formattedDate };
+
+    try {
+      await api.post(`api/itineraries/${id}/expenses/`, spendingData);
+      setSpendings([...spendings, spendingData]);
+      reset();
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+
+  if (totalBudget === "0.00") {
+    return (
+      <div className="mt-14 text-center text-lg font-montserrat">
+        <p>Please set a budget before adding spendings.</p>
+        <Input
+          type="number"
+          placeholder="Enter your budget"
+          value={budget}
+          onChange={(e) => setBudget(e.target.value)}
+          className="mt-4"
+        />
+        <Button onClick={handleSetBudget} className="mt-2">
+          Set Budget
+        </Button>
+      </div>
+    );
+  }
 
   const budgetUsed = spendings.reduce((sum, item) => sum + Number(item.amount), 0);
   const budgetRemaining = totalBudget - budgetUsed;
@@ -124,7 +172,7 @@ const Budget = ({ id, budget }) => {
           <div>
             <label className="text-main">Amount</label>
             <Input
-              category="number"
+              type="number"
               placeholder="Enter amount"
               {...register("amount")}
             />
@@ -158,7 +206,7 @@ const Budget = ({ id, budget }) => {
           <div>
             <label className="text-main">Description</label>
             <Input
-              category="text"
+              type="text"
               placeholder="Short description"
               {...register("description")}
             />
@@ -188,7 +236,7 @@ const Budget = ({ id, budget }) => {
         </div>
 
         <div className="flex justify-center group mt-8">
-          <Button variant="gold" category="submit" className="px-5">
+          <Button variant="gold" type="submit" className="px-5">
             Add Spending
             <ArrowRightIcon className="h-6 w-6 transition duration-300 ease-in-out group-hover:translate-x-1" />
           </Button>

@@ -7,9 +7,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Button } from "@/components/ui/button";
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
 import Image from "../Image";
 
 const ExploreCarousel = ({ exploreData }) => {
@@ -56,12 +53,6 @@ const ExploreCarousel = ({ exploreData }) => {
                       </h3>
                       <p className="text-center">{data.description}</p>
                     </div>
-                    <Link to={data.link ? data.link : `/blog/${data.id}`}>
-                      <Button variant="outline" className="mb-5 group">
-                        <span>Read More</span>
-                        <ArrowRightIcon className="h-6 w-6 transition duration-300 ease-in-out group-hover:translate-x-1" />
-                      </Button>
-                    </Link>
                   </div>
                 </div>
               </div>
