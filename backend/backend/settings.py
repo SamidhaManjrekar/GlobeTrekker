@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
-from imagekitio import ImageKit
 import os
 
 load_dotenv()
@@ -153,15 +152,3 @@ CORS_ALLOW_CREDENTIALS = True
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# ImageKit API Configuration
-IMAGEKIT_PRIVATE_KEY = os.getenv("IMAGEKIT_PRIVATE_KEY")
-IMAGEKIT_PUBLIC_KEY = os.getenv("IMAGEKIT_PUBLIC_KEY")
-IMAGEKIT_URL_ENDPOINT = os.getenv("IMAGEKIT_URL_ENDPOINT")
-
-# Initialize ImageKit instance
-imagekit = ImageKit(
-    private_key=IMAGEKIT_PRIVATE_KEY,
-    public_key=IMAGEKIT_PUBLIC_KEY,
-    url_endpoint=IMAGEKIT_URL_ENDPOINT
-)

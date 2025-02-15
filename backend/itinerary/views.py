@@ -38,7 +38,7 @@ class ItineraryDestinationsView(generics.ListAPIView):
     def get_queryset(self):
         return Itinerary.objects.filter(user=self.request.user).only('destination_location')
     
-class BudgetUpdateView(generics.UpdateAPIView):
+class BudgetUpdateView(generics.RetrieveUpdateAPIView):
     serializer_class = BudgetSerializer
     permission_classes = [permissions.IsAuthenticated]
 
