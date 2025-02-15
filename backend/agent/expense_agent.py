@@ -13,7 +13,7 @@ load_dotenv()
 
 gemini_api_key = os.getenv("GEMINI_API_KEY")
 
-engine = create_engine('sqlite:///./db.sqlite3')
+engine = create_engine('sqlite:///../db.sqlite3')
  
 
 # Define the Spending Report model
