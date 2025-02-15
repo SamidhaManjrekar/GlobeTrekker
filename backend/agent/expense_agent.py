@@ -13,13 +13,14 @@ load_dotenv()
 
 gemini_api_key = os.getenv("GEMINI_API_KEY")
 
-engine = create_engine('sqlite:///../db.sqlite3')
+engine = create_engine('sqlite:///./db.sqlite3')
  
 
 # Define the Spending Report model
 class SpendingReport(BaseModel):
     destination_location: str = Field(..., description="The destination of the trip.")
-    total_expenditure: float = Field(..., description="Total amount spent on this trip.")
+    budget: float = Field(..., description="Total budget for this trip.")
+    total_expenditure: float = Field(..., description="Total amount spent on this trip(sum of amount column).")
     budget_utilization: str = Field(..., description="Percentage of total budget used.")
     category_breakdown: Dict[str, float] = Field(..., description="Breakdown of expenses by category (e.g., food, transport).")
     day_wise_breakdown: Dict[str, float] = Field(..., description="Breakdown of expenses by date.")
@@ -35,11 +36,11 @@ data_agent = Agent(
     name="Data Agent",
     model=Gemini(id="gemini-1.5-flash", api_key=gemini_api_key),
     markdown=True,
-    # show_tool_calls=True, 
+    show_tool_calls=True, 
     structured_outputs=True, 
     instructions=[
         "You are a data retrieval agent responsible for fetching relevant financial data from an SQLite database.",
-        "Extract total budget, departure date(the date the users leaves for the trip), arrival date(the date the user returns from the trip), and the destination location from the `itinerary_itinerary` table, expenses from the `budget_expense` table and the activities per day from the itinerary_itinerary_activities table.",
+        "Extract total budget, departure date(the date the users leaves for the trip), arrival date(the date the user returns from the trip), and the destination location from the `itinerary_itinerary` table, total expense(sum of `amount` column), expenses for each category, for each category how much was spent and on which date, from the `budget_expense` table.",
         "Ensure data integrity and format it properly before passing it to the report agent.",
         "Here are the relevant table schemas:",
         "",
@@ -94,13 +95,47 @@ team_agent = Agent(
     retries=3
 )
 
-itinerary_id = 14
-data_response = data_agent.run(f"Retrieve all relevant financial data for itinerary {itinerary_id}.")
-financial_data = data_response.content  
+# itinerary_id = 19
+# data_response = data_agent.run(f"Retrieve all relevant financial data for itinerary {itinerary_id}.")
+# financial_data = data_response.content  
 
-report_response = report_agent.run(f"Analyze the following financial data and generate a spending report:\n{json.dumps(financial_data, indent=4)}")
-report_json = report_response.content 
+# report_response = report_agent.run(f"Analyze the following financial data and generate a spending report:\n{json.dumps(financial_data, indent=4)}")
+# report_json = report_response.content 
 
-team_agent.run("Verify the accuracy and quality of the spending report generated.")
+# team_agent.run("Verify the accuracy and quality of the spending report generated.")
 
-print(report_json)
+# # print(report_json)
+
+# print(json.dumps(report_json.model_dump(), indent=4))
+
+
+def generate_spending_report(itinerary_id: int) -> Dict[str, Any]:
+    """
+    Generates a detailed spending report for the given itinerary.
+
+    :param itinerary_id: The ID of the itinerary for which the spending report is generated.
+    :return: A dictionary containing the spending report.
+    """
+    data_response = data_agent.run(f"Retrieve all relevant financial data for itinerary {itinerary_id}.")
+    financial_data = data_response.content  
+
+    report_response = report_agent.run(f"Analyze the following financial data and generate a spending report:\n{json.dumps(financial_data, indent=4)}")
+    report_json = report_response.content 
+
+    team_agent.run("Verify the accuracy and quality of the spending report generated.")
+
+    return json.dumps(report_json.model_dump(), indent=4)
+
+import sys
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python script.py <itinerary_id>")
+        sys.exit(1)
+    
+    try:
+        itinerary_id = int(sys.argv[1])
+        report = generate_spending_report(itinerary_id)
+        pprint(report)
+    except ValueError:
+        print("Error: itinerary_id must be an integer.")

@@ -12,3 +12,4 @@ python-dotenv
 phidata
 sqlalchemy
 google-generativeai
+pydantic_ai 

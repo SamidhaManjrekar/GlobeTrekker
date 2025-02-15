@@ -28,3 +28,11 @@ class Expense(models.Model):
     
     def __str__(self):
         return f"Expense for {self.category}"
+    
+class Report(models.Model):
+    itinerary = models.OneToOneField(Itinerary, on_delete=models.CASCADE, related_name="report")
+    generated_at = models.DateTimeField(auto_now_add=True)
+    breakdown = models.JSONField(default=dict) 
+
+    def __str__(self):
+        return f"Report for Itinerary {self.itinerary.id}"
