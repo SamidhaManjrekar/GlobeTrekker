@@ -23,8 +23,12 @@ class SpendingReport(BaseModel):
     budget_utilization: str = Field(..., description="Percentage of total budget used.")
     category_breakdown: Dict[str, float] = Field(..., description="Breakdown of expenses by category (e.g., food, transport).")
     day_wise_breakdown: Dict[str, float] = Field(..., description="Breakdown of expenses by date.")
+    daily_budget_utilization: Dict[str, str] = Field(..., description="Percentage of the budget spent each day.")
+    category_trend_over_time: Dict[str, Dict[str, float]] = Field(..., description="How spending in each category evolved daily.")
+    top_expensive_days: List[str] = Field(..., description="The top 3 most expensive days of the trip.")
     spending_patterns: List[str] = Field(..., description="Key spending trends and behaviors.")
     key_observations: List[str] = Field(..., description="Major observations and possible optimization suggestions.")
+    recommendations: List[str] = Field(..., description="Personalized recommendations based on spending patterns to save money or for better utilization of money.")
     
 # Agent to fetch data from the database
 data_agent = Agent(
@@ -90,19 +94,13 @@ team_agent = Agent(
     retries=3
 )
 
-# Run the multi-agent workflow
 itinerary_id = 14
-
-# Step 1: Data Agent fetches relevant financial data
 data_response = data_agent.run(f"Retrieve all relevant financial data for itinerary {itinerary_id}.")
-financial_data = data_response.content  # Extract structured data
+financial_data = data_response.content  
 
-# Step 2: Report Agent processes the retrieved data
 report_response = report_agent.run(f"Analyze the following financial data and generate a spending report:\n{json.dumps(financial_data, indent=4)}")
-report_json = report_response.content  # Extract structured report
+report_json = report_response.content 
 
-# Step 3: Team Agent oversees the process
 team_agent.run("Verify the accuracy and quality of the spending report generated.")
 
-# Print the final spending report
 print(report_json)
