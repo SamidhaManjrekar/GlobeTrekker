@@ -1,4 +1,5 @@
 from typing import List, Dict, Any
+from datetime import date
 import json
 from rich.pretty import pprint
 from pydantic import BaseModel, Field
@@ -26,10 +27,12 @@ class SpendingReport(BaseModel):
     day_wise_breakdown: Dict[str, float] = Field(..., description="Breakdown of expenses by date.")
     daily_budget_utilization: Dict[str, str] = Field(..., description="Percentage of the budget spent each day.")
     category_trend_over_time: Dict[str, Dict[str, float]] = Field(..., description="How spending in each category evolved daily.")
-    top_expensive_days: List[str] = Field(..., description="The top 3 most expensive days of the trip.")
+    top_expensive_days: Dict[str, float] = Field(..., description="The top 3 most expensive days of the trip and the amount for those days.")
     spending_patterns: List[str] = Field(..., description="Key spending trends and behaviors.")
     key_observations: List[str] = Field(..., description="Major observations and possible optimization suggestions.")
     recommendations: List[str] = Field(..., description="Personalized recommendations based on spending patterns to save money or for better utilization of money.")
+    start_date: str = Field(..., description="Start date of the trip (departure_date in the itinerary_itinerary table).")
+    end_date: str = Field(..., description="End date of the trip (arrival_date in the itinerary_itinerary table).") 
     
 # Agent to fetch data from the database
 data_agent = Agent(
@@ -95,7 +98,7 @@ team_agent = Agent(
     retries=3
 )
 
-# itinerary_id = 19
+# itinerary_id = 14
 # data_response = data_agent.run(f"Retrieve all relevant financial data for itinerary {itinerary_id}.")
 # financial_data = data_response.content  
 
@@ -126,16 +129,16 @@ def generate_spending_report(itinerary_id: int) -> Dict[str, Any]:
 
     return json.dumps(report_json.model_dump(), indent=4)
 
-import sys
+# import sys
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python script.py <itinerary_id>")
-        sys.exit(1)
+# if __name__ == "__main__":
+#     if len(sys.argv) != 2:
+#         print("Usage: python script.py <itinerary_id>")
+#         sys.exit(1)
     
-    try:
-        itinerary_id = int(sys.argv[1])
-        report = generate_spending_report(itinerary_id)
-        pprint(report)
-    except ValueError:
-        print("Error: itinerary_id must be an integer.")
+#     try:
+#         itinerary_id = int(sys.argv[1])
+#         report = generate_spending_report(itinerary_id)
+#         pprint(report)
+#     except ValueError:
+#         print("Error: itinerary_id must be an integer.")

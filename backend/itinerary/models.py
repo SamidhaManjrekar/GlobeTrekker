@@ -62,6 +62,7 @@ class Itinerary(models.Model):
     arrival_date = models.DateField()
     departure_date = models.DateField()
     total_budget = models.DecimalField(max_digits=10, decimal_places=2, default=0, blank=True)
+    budget_used = models.DecimalField(max_digits=10, decimal_places=2, default=0, blank=True)
     budget_type = models.CharField(max_length=50, choices=[('Economy', 'Economy'), ('Standard', 'Standard'), ('Luxury', 'Luxury')],)
     number_of_adults = models.PositiveIntegerField(default=1)
     number_of_children = models.PositiveIntegerField(default=0)
