@@ -231,6 +231,7 @@ const BudgetReport = ({ id }) => {
                       backdropFilter: "blur(8px)",
                       color: "white",
                     }}
+                    itemStyle={{ color: "white" }} 
                   />
                   <Legend
                     formatter={(value) => (

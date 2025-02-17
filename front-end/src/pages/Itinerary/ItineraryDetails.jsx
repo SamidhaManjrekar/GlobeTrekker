@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Budget from "../Budget/Budget";
 import BudgetReport from "../Budget/BudgetReport";
+import { format } from "date-fns";
 
 const formatData = (data) => {
   const days = data.activities.reduce((acc, activity) => {
@@ -65,7 +66,8 @@ const ItineraryDetails = () => {
         setData(formattedData);
         console.log(formattedData);
         setBudget(formattedData.total_budget);
-        if (new Date(formattedData.arrival_date) < new Date()) {
+        const today = format(new Date(), "yyyy-MM-dd");
+        if (new Date(formattedData.arrival_date) < today) {
           setIsTripComplete(true);
         }
       } catch (error) {
