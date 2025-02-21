@@ -173,7 +173,7 @@ const BudgetReport = ({ id }) => {
 
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto bg-black text-white">
-      {/* <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center">
         <div>
           <h1 className="text-3xl font-bold text-center">Trip Budget Report</h1>
           <p className="text-white/80">
@@ -181,7 +181,7 @@ const BudgetReport = ({ id }) => {
             {new Date(budgetData.generated_at).toLocaleString()}
           </p>
         </div>
-      </div> */}
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
@@ -251,9 +251,9 @@ const BudgetReport = ({ id }) => {
             </CardTitle>
             <div onClick={handleClick}>
               {percentage ? (
-                <Percent className="text-white" />
+                <Percent className="text-white cursor-pointer" />
               ) : (
-                <DollarSign className="text-white" />
+                <DollarSign className="text-white cursor-pointer" />
               )}
             </div>
           </CardHeader>
@@ -285,11 +285,7 @@ const BudgetReport = ({ id }) => {
                   {percentage ? (
                     <Bar dataKey="amount" name="Amount ($)" fill={GOLD_COLOR} />
                   ) : (
-                    <Bar
-                      dataKey="percentage"
-                      name="Percentage (%)"
-                      fill={GOLD_COLOR}
-                    />
+                    <Bar dataKey="percentage" name="Percentage (%)" fill={GOLD_COLOR} />
                   )}
                 </BarChart>
               </ResponsiveContainer>

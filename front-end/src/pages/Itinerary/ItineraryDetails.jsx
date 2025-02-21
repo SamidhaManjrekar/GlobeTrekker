@@ -64,10 +64,9 @@ const ItineraryDetails = () => {
         const res = await api.get(`/api/itineraries/${id}/`);
         const formattedData = formatData(res?.data);
         setData(formattedData);
-        console.log(formattedData);
         setBudget(formattedData.total_budget);
         const today = format(new Date(), "yyyy-MM-dd");
-        if (new Date(formattedData.arrival_date) < today) {
+        if (formattedData.arrival_date < today) {
           setIsTripComplete(true);
         }
       } catch (error) {
