@@ -19,7 +19,6 @@ export const Navbar = () => {
   const [open, setOpen] = useState(false);
   const currentLinks = location.pathname === "/" ? navData : homeNavData;
   const userInfo = useSelector((state) => state.user.userInfo);
-
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > window.innerHeight / 32) {

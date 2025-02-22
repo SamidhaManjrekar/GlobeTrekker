@@ -38,7 +38,7 @@ class Blog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag, related_name='posts', blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blogs')
-    gallery = models.ImageField(upload_to='gallery/', blank=True, null=True)
+    gallery_url = models.URLField(max_length=500, blank=True, null=True)  
     likes = models.ManyToManyField(User, related_name="blog_likes", blank=True) 
     
     def __str__(self):
@@ -51,4 +51,4 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.content
+        return self.content[:50]

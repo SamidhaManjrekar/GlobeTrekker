@@ -4,6 +4,13 @@ from .models import Blog, Tag, Comment
 from rest_framework.response import Response
 from .serializers import BlogSerializer, TagsSerializer, CommentsSerializer, LikeSerializer, TopBlogSerializer
 from rest_framework.exceptions import PermissionDenied 
+from rest_framework.pagination import PageNumberPagination
+from django.db.models import Q
+
+class BlogPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 class BlogListCreateView(generics.ListCreateAPIView):
     serializer_class = BlogSerializer
@@ -46,9 +53,21 @@ class TopLikedBlogsView(generics.ListAPIView):
 class AllBlogView(generics.ListAPIView):
     serializer_class = BlogSerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    pagination_class = BlogPagination
+    
     def get_queryset(self):
-        return Blog.objects.all()
+        queryset = Blog.objects.all().order_by('-created_at')
+        tag = self.request.query_params.get('tag', None)
+        search = self.request.query_params.get('search', None)
+        
+        if tag:
+            queryset = queryset.filter(tags__name=tag)
+        if search:
+            queryset = queryset.filter(
+                Q(title__icontains=search) | 
+                Q(content__icontains=search)
+            )
+        return queryset
 
 class TagListCreateView(generics.ListCreateAPIView):
     queryset = Tag.objects.all()
