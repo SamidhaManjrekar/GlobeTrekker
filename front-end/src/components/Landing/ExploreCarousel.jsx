@@ -22,6 +22,17 @@ const ExploreCarousel = ({ exploreData }) => {
     autoplayInstance.current?.play();
   };
 
+  const cleanImageUrl = (url) => {
+    if (!url) return "travel.jpg";
+    
+    const baseUrl = "ik.imagekit.io/fnrswkvxr/";
+    if (url.includes(baseUrl)) {
+      const lastIndex = url.lastIndexOf(baseUrl);
+      return url.substring(lastIndex + baseUrl.length);
+    }
+    return url;
+  };
+
   return (
     <div
       className="px-7"
@@ -41,8 +52,8 @@ const ExploreCarousel = ({ exploreData }) => {
               <div className="p-1">
                 <div className="relative rounded-lg overflow-hidden">
                   <Image
-                    src={data.image || "travel.jpg"}
-                    alt={data.title}
+                    src={cleanImageUrl(data.gallery_url)}
+                    alt={data.title || "Travel destination"}
                     className="w-full h-64 object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-60"></div>

@@ -26,6 +26,7 @@ const FormSchema = z.object({
   title: z.string().min(1, "Title is required."),
   content: z.string().min(1, "Content is required."),
   tags: z.array(z.string()).min(1, "Select at least one tag."),
+  gallery: z.any(), 
 });
 
 const Template = () => {
@@ -34,6 +35,7 @@ const Template = () => {
   const [loading, setLoading] = useState(false);
   const [tagsData, setTagsData] = useState([]);
   const [initialData, setInitialData] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
 
   const form = useForm({
     resolver: zodResolver(FormSchema),
@@ -41,7 +43,7 @@ const Template = () => {
       title: "",
       content: "",
       tags: [],
-      images: [],
+      gallery: null,
     },
   });
 
@@ -52,6 +54,7 @@ const Template = () => {
         setTagsData(response.data);
       } catch (error) {
         console.log(error);
+        toast.error("Failed to fetch tags");
       }
     };
 
@@ -62,8 +65,10 @@ const Template = () => {
         try {
           const response = await api.get(`/api/blogs/${id}/`);
           setInitialData(response.data);
+          setPreviewImage(response.data.gallery_url);
         } catch (error) {
           console.log(error);
+          toast.error("Failed to fetch blog post");
         }
       };
 
@@ -77,31 +82,80 @@ const Template = () => {
         title: initialData.title,
         content: initialData.content,
         tags: initialData.tags,
-        images: initialData.gallery,
+        gallery: null,
       });
     }
   }, [initialData, form]);
 
+  const handleImageChange = (e, onChange) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please upload an image file");
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("File size should be less than 5MB");
+        return;
+      }
+
+      // Preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+
+      onChange(file);
+    }
+  };
+
   const onSubmit = async (data) => {
     setLoading(true);
     try {
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("content", data.content);
+  
+      // Append tags as an array (API should support this format)
+      data.tags.forEach((tag) => formData.append("tags", tag));
+  
+      // Append gallery image if it exists
+      if (data.gallery instanceof File) {
+        formData.append("gallery", data.gallery);
+      }
+  
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+  
       let res;
       if (id) {
-        res = await api.put(`/api/blogs/${id}/`, data);
+        res = await api.put(`/api/blogs/${id}/`, formData, config);
         toast.success("Blog Updated Successfully!");
       } else {
-        res = await api.post("api/your-blogs/", data);
+        res = await api.post("/api/your-blogs/", formData, config);
         toast.success("Blog Created Successfully!");
       }
+  
       navigate("/blog");
     } catch (error) {
       console.error(error.response?.data || error.message);
-      toast.error("An error occurred while saving the blog.");
+      const errorMessage =
+        error.response?.data?.detail ||
+        (Array.isArray(error.response?.data) ? error.response.data[0] : null) ||
+        "An error occurred while saving the blog.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
   };
-
+  
   if (!tagsData.length || (id && !initialData)) return <div>Loading...</div>;
 
   return (
@@ -157,21 +211,30 @@ const Template = () => {
 
             <FormField
               control={form.control}
-              name="images"
-              render={({ field }) => (
+              name="gallery"
+              render={({ field: { onChange, value, ...field } }) => (
                 <FormItem>
-                  <FormLabel htmlFor="images" className="text-main">
-                    Upload Images
+                  <FormLabel htmlFor="gallery" className="text-main">
+                    Upload Gallery Image
                   </FormLabel>
                   <FormControl>
                     <Input
-                      id="images"
+                      id="gallery"
                       type="file"
-                      multiple
                       accept="image/*"
-                      onChange={(e) => field.onChange(e.target.files)}
+                      onChange={(e) => handleImageChange(e, onChange)}
+                      {...field}
                     />
                   </FormControl>
+                  {previewImage && (
+                    <div className="mt-2">
+                      <img
+                        src={previewImage}
+                        alt="Preview"
+                        className="max-w-xs rounded-lg"
+                      />
+                    </div>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
@@ -222,7 +285,7 @@ const Template = () => {
                 className="w-36"
                 disabled={loading}
               >
-                <Save />
+                <Save className="mr-2 h-4 w-4" />
                 {loading ? "Submitting..." : id ? "Update Blog" : "Submit"}
               </Button>
             </div>

@@ -60,6 +60,7 @@ const Posts = () => {
     const fetchBlogData = async () => {
       try {
         const res = await api.get(`/api/blogs/${id}/`);
+        console.log("dheh",res.data);
         setData(res.data);
         setLikeCount(res.data.likes || 0);
         setLiked(res.data.liked_by_current_user || false);

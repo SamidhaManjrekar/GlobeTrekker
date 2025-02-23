@@ -19,7 +19,7 @@ const BlogCards = ({ data }) => {
       <Card className="relative group border-2 border-gold">
         <CardHeader className="relative p-0">
           <img
-            src={data.gallery}
+            src={data.gallery_url}
             alt={data.title}
             className="w-full h-56 object-cover rounded-t-md"
           />
