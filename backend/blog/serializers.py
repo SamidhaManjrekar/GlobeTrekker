@@ -23,44 +23,35 @@ class CommentsSerializer(serializers.ModelSerializer):
 class BlogSerializer(serializers.ModelSerializer):
     gallery = serializers.ImageField(write_only=True, required=False)
     gallery_url = serializers.URLField(read_only=True)
+    tags = serializers.SlugRelatedField(slug_field='name', queryset=Tag.objects.all(), many=True)
+    author = serializers.SerializerMethodField()
+    comments = CommentsSerializer(many=True, read_only=True)
+    likes = serializers.SerializerMethodField()
     
     class Meta:
         model = Blog
-        fields = ['id', 'title', 'content', 'created_at', 'tags', 
-                 'author', 'gallery', 'gallery_url', 'comments', 'likes']
+        fields = ['id', 'title', 'content', 'created_at', 'tags', 'author', 'gallery', 'gallery_url', 'comments', 'likes']
         extra_kwargs = {"author": {"read_only": True}}
 
     def create(self, validated_data):
-        # Extract gallery and tags
         gallery = validated_data.pop('gallery', None)
         tags_data = validated_data.pop('tags', [])
 
-        try:
-            # Create blog instance
-            blog = Blog.objects.create(**validated_data)
-            
-            # Set tags
-            blog.tags.set(tags_data)
-
-            # Handle image upload
-            if gallery:
-                logger.info(f"Processing gallery upload for blog {blog.id}")
-                try:
-                    gallery_url = upload_to_imagekit(gallery)
-                    blog.gallery_url = gallery_url
-                    blog.save()
-                except Exception as e:
-                    logger.error(f"Failed to upload image: {str(e)}")
-                    blog.delete()
-                    raise serializers.ValidationError({
-                        "gallery": f"Image upload failed: {str(e)}"
-                    })
-
-            return blog
-
-        except Exception as e:
-            logger.error(f"Error creating blog: {str(e)}")
-            raise serializers.ValidationError(str(e))
+        blog = Blog.objects.create(**validated_data)
+        blog.tags.set(tags_data)
+        
+        if gallery:
+            try:
+                gallery_url = upload_to_imagekit(gallery)
+                blog.gallery_url = gallery_url
+                blog.save()
+            except Exception as e:
+                logger.error(f"Failed to upload image: {str(e)}")
+                raise serializers.ValidationError({
+                    "gallery": f"Image upload failed: {str(e)}"
+                })
+        
+        return blog
 
     def update(self, instance, validated_data):
         gallery = validated_data.pop('gallery', None)
@@ -70,7 +61,6 @@ class BlogSerializer(serializers.ModelSerializer):
                 gallery_url = upload_to_imagekit(gallery)
                 validated_data['gallery_url'] = gallery_url
             except Exception as e:
-                logger.error(f"Failed to update image: {str(e)}")
                 raise serializers.ValidationError({
                     "gallery": f"Image upload failed: {str(e)}"
                 })
@@ -101,10 +91,11 @@ class LikeSerializer(serializers.ModelSerializer):
 
 class TopBlogSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField() 
+    gallery_url = serializers.URLField(read_only=True)
     
     class Meta:
         model = Blog
-        fields = ['id', 'title', 'likes']
+        fields = ['id', 'title', 'likes', 'gallery_url']
         
     def get_likes(self, obj):
         return obj.likes.count()
