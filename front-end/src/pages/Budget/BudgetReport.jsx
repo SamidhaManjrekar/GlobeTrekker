@@ -294,7 +294,6 @@ const BudgetReport = ({ id }) => {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className={`${glassStyle} lg:col-span-2`}>
           <CardHeader>
             <CardTitle className="text-white">
@@ -351,59 +350,6 @@ const BudgetReport = ({ id }) => {
           </CardContent>
         </Card>
 
-        <div className="flex flex-col gap-4">
-          <Card className={glassStyle}>
-            <CardHeader>
-              <CardTitle className="text-white">Most Expensive Days</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {Object.entries(breakdown.top_expensive_days ?? {}).map(
-                  ([date, amount], index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between"
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="text-white/80">{date}</span>
-                      </div>
-                      <span className="text-xl font-bold text-gold flex items-center">
-                        <DollarSign className="h-5 w-5" />
-                        {amount}
-                      </span>
-                    </div>
-                  )
-                )}
-              </div>
-            </CardContent>
-          </Card>
-          <Card className={glassStyle}>
-            <CardHeader>
-              <CardTitle className="text-white">Most Expensive Days</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {Object.entries(breakdown.top_expensive_days ?? {}).map(
-                  ([date, amount], index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between"
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="text-white/80">{date}</span>
-                      </div>
-                      <span className="text-xl font-bold text-gold flex items-center">
-                        <DollarSign className="h-5 w-5" />
-                        {amount}
-                      </span>
-                    </div>
-                  )
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className={glassStyle}>

@@ -83,34 +83,50 @@ const ItineraryDetails = () => {
         Trip To {data.destination_location}
       </h2>
 
-      <Tabs defaultValue="itinerary">
-        <TabsList className="grid w-full grid-cols-2 print:hidden">
-          <TabsTrigger value="itinerary">Itinerary</TabsTrigger>
-          <TabsTrigger value="budget">Budget</TabsTrigger>
-        </TabsList>
-        <TabsContent value="itinerary">
-          <div className="mt-10">
-            <TripDetails tripData={data} />
-            <div className="flex justify-center group">
-              <Button
-                className="mt-7 px-10 flex print:hidden"
-                variant="gold"
-                onClick={handleDownload}
-              >
-                Download
-                <ArrowRightIcon className="h-6 w-6 transition duration-300 ease-in-out group-hover:translate-x-1" />
-              </Button>
-            </div>
+      {isTripComplete && budget === "0.00" ? (
+        <div className="mt-10">
+          <TripDetails tripData={data} />
+          <div className="flex justify-center group">
+            <Button
+              className="mt-7 px-10 flex print:hidden"
+              variant="gold"
+              onClick={handleDownload}
+            >
+              Download
+              <ArrowRightIcon className="h-6 w-6 transition duration-300 ease-in-out group-hover:translate-x-1" />
+            </Button>
           </div>
-        </TabsContent>
-        <TabsContent value="budget">
-          {isTripComplete ? (
-            <BudgetReport id={id} />
-          ) : (
-            <Budget id={id} budget={budget} />
-          )}
-        </TabsContent>
-      </Tabs>
+        </div>
+      ) : (
+        <Tabs defaultValue="itinerary">
+          <TabsList className="grid w-full grid-cols-2 print:hidden">
+            <TabsTrigger value="itinerary">Itinerary</TabsTrigger>
+            <TabsTrigger value="budget">Budget</TabsTrigger>
+          </TabsList>
+          <TabsContent value="itinerary">
+            <div className="mt-10">
+              <TripDetails tripData={data} />
+              <div className="flex justify-center group">
+                <Button
+                  className="mt-7 px-10 flex print:hidden"
+                  variant="gold"
+                  onClick={handleDownload}
+                >
+                  Download
+                  <ArrowRightIcon className="h-6 w-6 transition duration-300 ease-in-out group-hover:translate-x-1" />
+                </Button>
+              </div>
+            </div>
+          </TabsContent>
+          <TabsContent value="budget">
+            {isTripComplete ? (
+              <BudgetReport id={id} />
+            ) : (
+              <Budget id={id} budget={budget} />
+            )}
+          </TabsContent>
+        </Tabs>
+      )}
     </div>
   );
 };

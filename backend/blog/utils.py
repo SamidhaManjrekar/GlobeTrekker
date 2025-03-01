@@ -1,8 +1,5 @@
 from imagekitio import ImageKit
 from django.conf import settings
-import logging
-
-logger = logging.getLogger(__name__)
 
 def upload_to_imagekit(image_file):
     """
@@ -33,9 +30,6 @@ def upload_to_imagekit(image_file):
             file_name=file_name
         )
         
-        logger.debug(f"Upload result type: {type(result)}")
-        logger.debug(f"Upload result: {result.__dict__ if hasattr(result, '__dict__') else result}")
-
         if hasattr(result, 'url'):
             return result.url
         elif hasattr(result, 'response') and hasattr(result.response, 'url'):
@@ -46,5 +40,4 @@ def upload_to_imagekit(image_file):
         raise ValueError(f"Could not find URL in response. Response type: {type(result)}")
 
     except Exception as e:
-        logger.error(f"ImageKit upload error: {e}")
         raise Exception(f"Image upload failed: {e}")
