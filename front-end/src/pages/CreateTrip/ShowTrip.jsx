@@ -32,6 +32,7 @@ const ShowTrip = () => {
         `);
   
         const response = await result?.response?.text();
+        console.log("Raw response from chatSession:", response);
         const data = JSON.parse(response);
 
         const imageResponse = await getImage(data.destination_location);
