@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import LandingPage from './pages/Landing/LandingPage'
 import Signin from './pages/Authentication/Signin';
 import Signup from './pages/Authentication/Signup';
