@@ -1,6 +1,6 @@
 import React from "react";
 import { z } from "zod";
-import Auth from "../../components/auth/auth";
+import Auth from "../../components/auth/Auth";
 import { useNavigate } from "react-router-dom";
 import api from "@/api/interceptor";
 import { toast } from "sonner";
