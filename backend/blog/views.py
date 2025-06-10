@@ -7,6 +7,12 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q
 
+import time
+import hashlib
+import hmac
+from rest_framework.views import APIView
+from django.conf import settings
+
 class BlogPagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'page_size'
@@ -115,3 +121,25 @@ class BlogLikeToggleView(generics.RetrieveUpdateDestroyAPIView):
             liked = True
 
         return Response({"liked": liked, "likes_count": blog.likes.count()})
+    
+class ImageKitAuthView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        public_key = settings.IMAGEKIT_PUBLIC_KEY
+        private_key = settings.IMAGEKIT_PRIVATE_KEY
+
+        token = str(int(time.time()))
+        expire = int(token) + 240  
+        
+        message = f"{token}{expire}".encode()
+        signature = hmac.new(private_key.encode(), message, hashlib.sha1).hexdigest()
+
+        return Response({
+            "token": token,
+            "expire": expire,
+            "signature": signature,
+            "public_key": public_key
+        })
+
+

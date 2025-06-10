@@ -11,4 +11,5 @@ urlpatterns = [
     path('comments/<int:pk>/', views.CommentDetailView.as_view(), name='comment-detail'),
     path('like/<int:pk>/', views.BlogLikeToggleView.as_view(), name='like_blog'),
     path('blogs/top-liked/', views.TopLikedBlogsView.as_view(), name='top-liked-blogs'),
+    path('imagekit-auth/', views.ImageKitAuthView.as_view(), name='imagekit-auth'),
 ]
