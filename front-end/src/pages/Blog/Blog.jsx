@@ -43,6 +43,7 @@ const Blog = () => {
     const fetchTopBlogs = async () => {
       try {
         const response = await api.get(`/api/blogs/top-liked/`);
+        console.log("Top Blogs Response:", response.data);
         setTopBlogs(response.data);
       } catch (error) {
         setError(error.response?.data || "Failed to fetch blogs");
@@ -78,7 +79,7 @@ const Blog = () => {
         Start Your Journey Through Ideas
       </h2>
 
-      <h3 className="text-center mt-7 font-light mb-5 text-3xl">Our blogs</h3>
+      <h3 className="text-center mt-7 font-light mb-5 text-3xl">Top blogs</h3>
       <section className="mb-10">
         <ExploreCarousel exploreData={topBlogs} />
       </section>

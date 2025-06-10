@@ -8,6 +8,9 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Image from "../Image";
+import { Link } from "react-router-dom";
+import { Button } from "../ui/button";
+import { ArrowRightIcon } from "lucide-react";
 
 const ExploreCarousel = ({ exploreData }) => {
   const autoplayInstance = useRef(
@@ -24,7 +27,7 @@ const ExploreCarousel = ({ exploreData }) => {
 
   const cleanImageUrl = (url) => {
     if (!url) return "travel.jpg";
-    
+
     const baseUrl = "ik.imagekit.io/fnrswkvxr/";
     if (url.includes(baseUrl)) {
       const lastIndex = url.lastIndexOf(baseUrl);
@@ -63,6 +66,14 @@ const ExploreCarousel = ({ exploreData }) => {
                         {data.title}
                       </h3>
                       <p className="text-center">{data.description}</p>
+                      {data.id && (
+                        <Link to={`/blog/${data.id}`}>
+                          <Button variant="secondary" className="w-full group mt-4">
+                            <span>Read More</span>
+                            <ArrowRightIcon className="h-6 w-6 transition duration-300 ease-in-out group-hover:translate-x-1" />
+                          </Button>
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </div>
