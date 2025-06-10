@@ -7,8 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import ExploreCarousel from "../Landing/ExploreCarousel";
-import { exploreData } from "@/data/exploreData";
 import { format, set } from "date-fns";
 import { Navbar } from "../Navbar";
 import api from "@/api/interceptor";
@@ -60,7 +58,6 @@ const Posts = () => {
     const fetchBlogData = async () => {
       try {
         const res = await api.get(`/api/blogs/${id}/`);
-        console.log("dheh",res.data);
         setData(res.data);
         setLikeCount(res.data.likes || 0);
         setLiked(res.data.liked_by_current_user || false);
@@ -79,12 +76,12 @@ const Posts = () => {
 
   const handleDelete = async () => {
     try {
-      const res = await api.post(`/api/like/${id}/`);
-      setLiked(res.data.liked);
-      setLikeCount(res.data.like_count);
+      const res = await api.delete(`/api/blogs/${id}/`);
+      navigate("/blog");
+      toast.success("Post deleted successfully");
     } catch (error) {
-      console.error("Error liking post:", error);
-      toast.error("Failed to like the post");
+      console.error("Error deleting post:", error);
+      toast.error("Failed to delete the post");
     }
   };
 
@@ -276,10 +273,6 @@ const Posts = () => {
           </CardFooter>
         </Card>
       )}
-
-      <div className="my-12">
-        <ExploreCarousel exploreData={exploreData} />
-      </div>
     </div>
   );
 };

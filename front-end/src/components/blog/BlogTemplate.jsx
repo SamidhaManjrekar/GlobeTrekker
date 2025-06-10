@@ -21,12 +21,13 @@ import api from "@/api/interceptor";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 import { Save } from "lucide-react";
+import { uploadToImageKit } from "@/services/UploadImage";
 
 const FormSchema = z.object({
   title: z.string().min(1, "Title is required."),
   content: z.string().min(1, "Content is required."),
   tags: z.array(z.string()).min(1, "Select at least one tag."),
-  gallery: z.any(), 
+  gallery: z.any().optional(),
 });
 
 const Template = () => {
@@ -36,6 +37,7 @@ const Template = () => {
   const [tagsData, setTagsData] = useState([]);
   const [initialData, setInitialData] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const form = useForm({
     resolver: zodResolver(FormSchema),
@@ -43,7 +45,7 @@ const Template = () => {
       title: "",
       content: "",
       tags: [],
-      gallery: null,
+      gallery: "",
     },
   });
 
@@ -87,75 +89,66 @@ const Template = () => {
     }
   }, [initialData, form]);
 
-  const handleImageChange = (e, onChange) => {
+  const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        toast.error("Please upload an image file");
-        return;
-      }
+    if (!file) return;
 
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("File size should be less than 5MB");
-        return;
-      }
-
-      // Preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-
-      onChange(file);
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload an image file");
+      return;
     }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File size should be less than 5MB");
+      return;
+    }
+
+    setSelectedFile(file);
+    setPreviewImage(URL.createObjectURL(file));
+
+    form.setValue("gallery", file);
   };
 
   const onSubmit = async (data) => {
     setLoading(true);
+
     try {
-      const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("content", data.content);
-  
-      // Append tags as an array (API should support this format)
-      data.tags.forEach((tag) => formData.append("tags", tag));
-  
-      // Append gallery image if it exists
-      if (data.gallery instanceof File) {
-        formData.append("gallery", data.gallery);
+      let galleryUrl = "";
+
+      if (selectedFile) {
+        galleryUrl = await uploadToImageKit(selectedFile);
+      } else if (previewImage) {
+        galleryUrl = previewImage;
       }
-  
-      const config = {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+
+      const payload = {
+        title: data.title,
+        content: data.content,
+        tags: data.tags,
+        gallery_url: galleryUrl,
       };
-  
+
       let res;
       if (id) {
-        res = await api.put(`/api/blogs/${id}/`, formData, config);
+        res = await api.put(`/api/blogs/${id}/`, payload);
         toast.success("Blog Updated Successfully!");
       } else {
-        res = await api.post("/api/your-blogs/", formData, config);
+        res = await api.post("/api/your-blogs/", payload);
         toast.success("Blog Created Successfully!");
       }
-  
+
       navigate("/blog");
     } catch (error) {
       console.error(error.response?.data || error.message);
-      const errorMessage =
+      toast.error(
         error.response?.data?.detail ||
-        (Array.isArray(error.response?.data) ? error.response.data[0] : null) ||
-        "An error occurred while saving the blog.";
-      toast.error(errorMessage);
+          "An error occurred while saving the blog."
+      );
     } finally {
       setLoading(false);
     }
   };
-  
+
   if (!tagsData.length || (id && !initialData)) return <div>Loading...</div>;
 
   return (
@@ -212,7 +205,7 @@ const Template = () => {
             <FormField
               control={form.control}
               name="gallery"
-              render={({ field: { onChange, value, ...field } }) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel htmlFor="gallery" className="text-main">
                     Upload Gallery Image
@@ -222,8 +215,7 @@ const Template = () => {
                       id="gallery"
                       type="file"
                       accept="image/*"
-                      onChange={(e) => handleImageChange(e, onChange)}
-                      {...field}
+                      onChange={handleImageChange}
                     />
                   </FormControl>
                   {previewImage && (

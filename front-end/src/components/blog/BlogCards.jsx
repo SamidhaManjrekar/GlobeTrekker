@@ -10,6 +10,7 @@ import {
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
+import Image from "../Image";
 
 const BlogCards = ({ data }) => {
   const sanitizedContent = DOMPurify.sanitize(data.content);
@@ -18,10 +19,10 @@ const BlogCards = ({ data }) => {
     <div className="my-6 w-full sm:w-54 mx-auto">
       <Card className="relative group border-2 border-gold">
         <CardHeader className="relative p-0">
-          <img
+          <Image
             src={data.gallery_url}
             alt={data.title}
-            className="w-full h-56 object-cover rounded-t-md"
+            className="w-full h-56 object-cover rounded-t-md "
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-80 rounded-t-lg"></div>
           <CardTitle className="absolute bottom-4 left-4 p-1 text-white text-xl font-semibold z-10">
