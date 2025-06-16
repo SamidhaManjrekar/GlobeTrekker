@@ -12,15 +12,14 @@ import { MapPinIcon } from "@heroicons/react/24/outline";
 import { Star } from "lucide-react";
 
 const TripDetails = ({ tripData }) => {
-  const hotels = tripData?.hotel || [];
+  const hotels = tripData?.hotel || tripData?.hotels || [];
   const itinerary = tripData?.itinerary || [];
   const travelOptions = tripData?.travel_options || [];
   const flights = tripData?.flight || [];
   const notes = tripData?.note || [];
-
   return (
     <>
-      <section className="mb-8">
+      <section className="mb-12">
         <h2 className="text-2xl font-medium mb-4">Recommended Hotels</h2>
         <div className="flex gap-5">
           {hotels.map((hotel, index) => (
@@ -51,10 +50,40 @@ const TripDetails = ({ tripData }) => {
                 </ul>
               </div>
               <div className="font-semibold mt-2">Perks:</div>
-              <div className="text-sm">{hotel.general_info}</div>
+              <div className="text-sm">{hotel.general_info || hotel.perks}</div>
             </Card>
           ))}
         </div>
+      </section>
+
+
+      <section className="mb-12">
+        <h2 className="text-2xl font-medium mb-4">Flights</h2>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Airline</TableHead>
+              {flights[0]?.departure_airport && <TableHead>Departure Airport</TableHead>}
+              <TableHead>Departure Time</TableHead>
+              {flights[0]?.arrival_airport && <TableHead>Arrival Airport</TableHead>}
+              <TableHead>Arrival Time</TableHead>
+              <TableHead>Ticket Price</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {flights.map((flight, index) => (
+              <TableRow key={index}>
+                <TableCell>{flight.airline}</TableCell>
+                {flight.departure_airport && <TableCell>{flight.departure_airport}</TableCell>}
+                <TableCell>{flight.departure_time}</TableCell>
+                {flight.arrival_airport && <TableCell>{flight.arrival_airport}</TableCell>}
+                <TableCell>{flight.arrival_time}</TableCell>
+                <TableCell>{flight.price}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <hr />
       </section>
 
       <section className="mb-8">
@@ -99,43 +128,13 @@ const TripDetails = ({ tripData }) => {
 
       <section className="mb-8">
         <h2 className="text-2xl font-medium mb-4">Travel Options</h2>
-        {travelOptions.map((option, index) => (
-          <Card key={index} className="p-4 mb-4 border-2 border-gold">
-            <div className="mb-4">
-              <div className="font-semibold text-lg">{option.title}</div>
-              <div className="text-sm mt-2 font-medium">
-                Mode of Transport:{" "}
-                <span className="font-normal">{option.method}</span>
-              </div>
-              <div className="text-sm mt-2">{option.details}</div>
+        <Card className="p-4 mb-4 border-2 border-gold">
+          {travelOptions.map((option, index) => (
+            <div className="mb-4" key={index}>
+              <div className="font-semibold text-base">{option.method}: <span className="text-base font-normal mt-2">{option.details || option.description}</span></div>
             </div>
-          </Card>
-        ))}
-      </section>
-
-      <section className="mb-8">
-        <h2 className="text-2xl font-medium mb-4">Flights</h2>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Airline</TableHead>
-              <TableHead>Departure Time</TableHead>
-              <TableHead>Arrival Time</TableHead>
-              <TableHead>Ticket Price</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {flights.map((flight, index) => (
-              <TableRow key={index}>
-                <TableCell>{flight.airline}</TableCell>
-                <TableCell>{flight.departure_time}</TableCell>
-                <TableCell>{flight.arrival_time}</TableCell>
-                <TableCell>{flight.price}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        <hr />
+          ))}
+        </Card>
       </section>
 
       <section>

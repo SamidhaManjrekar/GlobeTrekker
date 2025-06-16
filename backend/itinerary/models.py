@@ -29,7 +29,6 @@ class Activity(models.Model):
         return self.activity_name
     
 class TravelOption(models.Model):
-    title = models.CharField(max_length=50, default="Null")
     method = models.CharField(max_length=50)
     details = models.TextField()
     
@@ -41,6 +40,8 @@ class Flight(models.Model):
     departure_time = models.CharField(max_length=100)
     arrival_time = models.CharField(max_length=100)
     price = models.CharField(max_length=100)
+    departure_airport = models.CharField(max_length=255, blank=True, null=True)
+    arrival_airport = models.CharField(max_length=255, blank=True, null=True)
     
     def __str__(self):
         return self.airline

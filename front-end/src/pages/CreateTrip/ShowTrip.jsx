@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { chatSession } from "@/services/TripGenerator";
+// import { chatSession } from "@/services/TripGenerator";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Navbar";
 import { toast } from "sonner";
 import api from "@/api/interceptor";
 import TripDetails from "@/components/Trip/TripDetails";
 import { getImage } from "@/services/ImageGenerator";
+import axios from "axios";
 
 const ShowTrip = () => {
   const location = useLocation();
@@ -19,43 +20,104 @@ const ShowTrip = () => {
 
   useEffect(() => {
     const fetchTripAndImage = async () => {
-      try {
-        const result = await chatSession.sendMessage(`
-          Source: ${formData.source}, 
-          Destination: ${formData.destination}, 
-          Budget: ${formData.budgetType}, 
-          No of Adults: ${formData.numberOfAdults}, 
-          No of Children: ${formData.numberOfChildren}, 
-          Departure Date: ${formData.departureDate}, 
-          Return Date: ${formData.returnDate}, 
-          Specific Requirements: ${formData.requirements}
-        `);
-  
-        const response = await result?.response?.text();
-        console.log("Raw response from chatSession:", response);
-        const data = JSON.parse(response);
+      if (!formData) {
+        setError(
+          "No trip request data found. Please go back and create a trip."
+        );
+        setLoading(false);
+        return;
+      }
 
-        const imageResponse = await getImage(data.destination_location);
-        console.log(imageResponse.url);
-        setTripData({ ...data, image_url: imageResponse.url });
+      try {
+        const departureDate =
+          formData.departureDate instanceof Date
+            ? formData.departureDate.toISOString().split("T")[0]
+            : formData.departureDate;
+        const returnDate =
+          formData.returnDate instanceof Date
+            ? formData.returnDate.toISOString().split("T")[0]
+            : formData.returnDate;
+
+        const payload = {
+          source: formData.source,
+          destination: formData.destination,
+          departure_date: departureDate,
+          return_date: returnDate,
+          activity_preferences: formData.requirements,
+          budget: formData.budgetType,
+          no_of_adults: formData.numberOfAdults,
+          no_of_children: formData.numberOfChildren,
+        };
+
+        const response = await axios.post(
+          "http://127.0.0.1:8001/plan_trip",
+          payload
+        );
+        const data = response.data;
+
+        if (data && data.itinerary) {
+          const destinationForImage =
+            data.user_request_summary?.destination || data.destination;
+          let imageUrl = null;
+          if (destinationForImage) {
+            try {
+              const imageResponse = await getImage(destinationForImage);
+              imageUrl = imageResponse?.url;
+              console.log("Generated Image URL:", imageUrl);
+            } catch (imageError) {
+              console.warn("Failed to generate image:", imageError);
+              imageUrl =
+                "https://placehold.co/600x400/CCCCCC/000000?text=No+Image";
+              toast.warning("Could not generate an image for the destination.");
+            }
+          } else {
+            console.warn("No destination for image generation.");
+            imageUrl =
+              "https://placehold.co/600x400/CCCCCC/000000?text=No+Image";
+          }
+
+          setTripData({ ...data, image_url: imageUrl });
+          toast.success("Your trip plan has been generated!");
+        } else {
+          setError("Backend generated incomplete trip data. Please try again.");
+          console.error(
+            "FastAPI response did not contain a valid itinerary:",
+            data
+          );
+          toast.error("Failed to generate complete trip. Check backend logs.");
+        }
       } catch (err) {
-        console.error("Error:", err);
-        setError("Failed to generate trip data. Please try again.");
+        console.error("Error generating trip data from FastAPI backend:", err);
+        setError(
+          "Failed to generate trip data. Please ensure the FastAPI backend is running on port 8001 and try again. " +
+            (err.response?.data?.detail || err.message)
+        );
+        toast.error(
+          "Error generating trip: " +
+            (err.response?.data?.detail || err.message)
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchTripAndImage();
-  }, [formData]);
+  }, [formData, navigate]);
 
   const formatData = (data) => {
+    if (!data || !data.user_request_summary) {
+      console.error(
+        "Trip data or user request summary is missing for Django formatting."
+      );
+      return null;
+    }
+
     const formattedActivities = data.itinerary.flatMap((day) =>
       day.activities.map((activity) => ({
         day: day.day,
         date: day.date,
         city: day.city,
-        location: day.location,
+        location: day.city, 
         activity_name: activity.activity_name,
         description: activity.description,
         ticket_price: activity.ticket_price,
@@ -63,17 +125,44 @@ const ShowTrip = () => {
       }))
     );
 
-    return {
-      ...data,
+    const formattedData = {
+      arrival_date: data.user_request_summary.return_date, 
+      budget_type: data.user_request_summary.budget, 
+      departure_date: data.user_request_summary.departure_date,
+      destination_location: data.user_request_summary.destination, 
+      source_location: data.user_request_summary.source, 
+      
+      image_url: data.image_url, 
+      
+      travel_options: data.travel_options.map(option => ({
+        method: option.method,
+        details: option.description,
+      })),
+
       activities: formattedActivities,
-      itinerary: undefined,
+      flight: data.flight,
+      hotel: data.hotels.map(hotel => ({
+        ...hotel,
+        general_info: hotel.perks, 
+      })),
+      note: data.note,
     };
+
+    return formattedData;
   };
 
   const saveTrip = async () => {
     setSaving(true);
     try {
       const formattedData = formatData(tripData);
+
+      if (!formattedData) {
+        setError("Failed to format trip data for saving.");
+        toast.error("Failed to save trip: Data formatting error.");
+        setSaving(false);
+        return;
+      }
+
       await api.post("/api/itineraries/", formattedData);
       navigate("/home");
       toast("Tour trip has been saved!", {
@@ -84,9 +173,11 @@ const ShowTrip = () => {
         },
       });
     } catch (error) {
-      console.log(error);
+      console.error("Error saving trip to Django backend:", error);
       setError("Failed to save the trip. Please try again.");
-      toast.error("Error saving trip. Please try again.");
+      toast.error(
+        "Error saving trip: " + (error.response?.data?.detail || error.message)
+      );
     } finally {
       setSaving(false);
     }
