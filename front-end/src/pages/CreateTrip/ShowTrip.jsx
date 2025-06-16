@@ -50,7 +50,7 @@ const ShowTrip = () => {
         };
 
         const response = await axios.post(
-          "http://127.0.0.1:8001/plan_trip",
+          "https://itinerary-generator.onrender.com/plan_trip",
           payload
         );
         const data = response.data;
