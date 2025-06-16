@@ -34,7 +34,8 @@ DEBUG = False
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
-    'globetrekker-backend-api.onrender.com', 
+    'https://globetrekker-backend-api.onrender.com',
+    'https://globetrekker-q2fj.onrender.com', 
 ]
 
 
