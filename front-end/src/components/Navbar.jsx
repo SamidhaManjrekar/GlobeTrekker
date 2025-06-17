@@ -70,12 +70,12 @@ export const Navbar = () => {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   ) : (
-                    <a
-                      href={link.href}
+                    <Link
+                      to={link.href}
                       className="transition-all hover:text-gold"
                     >
                       {link.name}
-                    </a>
+                    </Link>
                   )}
                 </li>
               ))}
@@ -109,13 +109,13 @@ export const Navbar = () => {
                     </Button>
                   </Link>
                 ) : (
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.href}
                     className="transition-all hover:text-gold"
                     onClick={() => setOpen(false)}
                   >
                     {link.name}
-                  </a>
+                  </Link>
                 )}
               </li>
             ))}
