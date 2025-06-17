@@ -45,7 +45,7 @@ data_agent = Agent(
     show_tool_calls=True, 
     structured_outputs=True, 
     instructions=[
-        "You are a data retrieval agent responsible for fetching relevant financial data from an SQLite database.", # NOTE: This instruction still mentions SQLite, you might want to update it for accuracy if you want the LLM to 'know' the database type.
+        "You are a data retrieval agent responsible for fetching relevant financial data from a PostgreSQL database..",
         "Extract total budget, departure date(the date the users leaves for the trip), arrival date(the date the user returns from the trip), and the destination location from the `itinerary_itinerary` table, total expense(sum of `amount` column), expenses for each category, for each category how much was spent and on which date, from the `budget_expense` table.",
         "Ensure data integrity and format it properly before passing it to the report agent.",
         "Here are the relevant table schemas:",
