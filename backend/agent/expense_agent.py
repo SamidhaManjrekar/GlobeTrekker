@@ -14,10 +14,13 @@ load_dotenv()
 
 gemini_api_key = os.getenv("GEMINI_API_KEY")
 
-engine = create_engine('sqlite:///./db.sqlite3')
+database_url = os.getenv("DATABASE_URL")
+if not database_url:
+    raise ValueError("DATABASE_URL environment variable not set. Please configure your PostgreSQL database connection.")
+
+engine = create_engine(database_url, pool_pre_ping=True)
  
 
-# Define the Spending Report model
 class SpendingReport(BaseModel):
     destination_location: str = Field(..., description="The destination of the trip.")
     budget: float = Field(..., description="Total budget for this trip.")
@@ -34,7 +37,7 @@ class SpendingReport(BaseModel):
     start_date: str = Field(..., description="Start date of the trip (departure_date in the itinerary_itinerary table).")
     end_date: str = Field(..., description="End date of the trip (arrival_date in the itinerary_itinerary table).") 
     
-# Agent to fetch data from the database
+    
 data_agent = Agent(
     name="Data Agent",
     model=Gemini(id="gemini-1.5-flash", api_key=gemini_api_key),
@@ -42,7 +45,7 @@ data_agent = Agent(
     show_tool_calls=True, 
     structured_outputs=True, 
     instructions=[
-        "You are a data retrieval agent responsible for fetching relevant financial data from an SQLite database.",
+        "You are a data retrieval agent responsible for fetching relevant financial data from an SQLite database.", # NOTE: This instruction still mentions SQLite, you might want to update it for accuracy if you want the LLM to 'know' the database type.
         "Extract total budget, departure date(the date the users leaves for the trip), arrival date(the date the user returns from the trip), and the destination location from the `itinerary_itinerary` table, total expense(sum of `amount` column), expenses for each category, for each category how much was spent and on which date, from the `budget_expense` table.",
         "Ensure data integrity and format it properly before passing it to the report agent.",
         "Here are the relevant table schemas:",
@@ -66,7 +69,6 @@ data_agent = Agent(
     retries=3
 )
 
-# Agent to generate a detailed report based on the retrieved data
 report_agent = Agent(
     name="Report Agent",
     model=Gemini(id="gemini-1.5-flash", api_key=gemini_api_key),
@@ -83,7 +85,6 @@ report_agent = Agent(
     retries=3
 )
 
-# Team Agent to manage the process
 team_agent = Agent(
     name="Team Agent",
     model=Gemini(id="gemini-1.5-flash", api_key=gemini_api_key),
@@ -97,20 +98,6 @@ team_agent = Agent(
     ],
     retries=3
 )
-
-# itinerary_id = 14
-# data_response = data_agent.run(f"Retrieve all relevant financial data for itinerary {itinerary_id}.")
-# financial_data = data_response.content  
-
-# report_response = report_agent.run(f"Analyze the following financial data and generate a spending report:\n{json.dumps(financial_data, indent=4)}")
-# report_json = report_response.content 
-
-# team_agent.run("Verify the accuracy and quality of the spending report generated.")
-
-# # print(report_json)
-
-# print(json.dumps(report_json.model_dump(), indent=4))
-
 
 def generate_spending_report(itinerary_id: int) -> Dict[str, Any]:
     """
@@ -128,17 +115,3 @@ def generate_spending_report(itinerary_id: int) -> Dict[str, Any]:
     team_agent.run("Verify the accuracy and quality of the spending report generated.")
 
     return json.dumps(report_json.model_dump(), indent=4)
-
-# import sys
-
-# if __name__ == "__main__":
-#     if len(sys.argv) != 2:
-#         print("Usage: python script.py <itinerary_id>")
-#         sys.exit(1)
-    
-#     try:
-#         itinerary_id = int(sys.argv[1])
-#         report = generate_spending_report(itinerary_id)
-#         pprint(report)
-#     except ValueError:
-#         print("Error: itinerary_id must be an integer.")
