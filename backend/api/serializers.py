@@ -10,13 +10,25 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def validate_username(self, value):
-        if User.objects.filter(username=value).exists():
-            raise serializers.ValidationError("Username already exists.")
+        if self.instance:
+            if self.instance.username == value:
+                return value
+            if User.objects.exclude(pk=self.instance.pk).filter(username=value).exists():
+                raise serializers.ValidationError("Username already exists.")
+        else: 
+            if User.objects.filter(username=value).exists():
+                raise serializers.ValidationError("Username already exists.")
         return value
 
     def validate_email(self, value):
-        if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("Email already exists.")
+        if self.instance:
+            if self.instance.email == value:
+                return value
+            if User.objects.exclude(pk=self.instance.pk).filter(email=value).exists():
+                raise serializers.ValidationError("Email already exists.")
+        else:
+            if User.objects.filter(email=value).exists():
+                raise serializers.ValidationError("Email already exists.")
         return value
 
     def create(self, validated_data):
@@ -24,14 +36,11 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
-        instance.first_name = validated_data.get("first_name", instance.first_name)
-        instance.last_name = validated_data.get("last_name", instance.last_name)
-        instance.username = validated_data.get("username", instance.username)
-        instance.email = validated_data.get("email", instance.email)
-
-        password = validated_data.get("password", None)
+        password = validated_data.pop("password", None) 
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        
         if password:
             instance.set_password(password)
-        
         instance.save()
         return instance
