@@ -13,7 +13,6 @@ const Signin = () => {
   const dispatch = useDispatch();  
 
   const handleLogin = async (data) => {
-    console.log("Login Data:", data);
     try {
       const res = await api.post("/api/signin/", data);
       localStorage.setItem(ACCESS_TOKEN, res.data.access);

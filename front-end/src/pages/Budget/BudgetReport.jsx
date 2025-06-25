@@ -46,7 +46,6 @@ const BudgetReport = ({ id }) => {
                 ? JSON.parse(res.data.breakdown)
                 : res.data.breakdown,
           };
-          console.log(parsedData.breakdown);
           setBudgetData(parsedData);
         }
         

@@ -102,10 +102,6 @@ const Template = () => {
       toast.error("File size should be less than 5MB");
       return;
     }
-    console.log("File selected for upload:", file); // <--- ADD THIS LINE
-      console.log("File name:", file.name);         // <--- ADD THIS LINE
-      console.log("File type:", file.type);         // <--- ADD THIS LINE
-      console.log("File size:", file.size); 
     setSelectedFile(file);
     setPreviewImage(URL.createObjectURL(file));
 

@@ -8,10 +8,8 @@ import { toast } from "sonner";
 const Signup = () => {
   const navigate = useNavigate();
   const handleSignUp = async (data) => {
-    console.log("Signup Data:", data);
     try {
       const res = await api.post("/api/signup/", data);
-      console.log(res.data);
       toast.success("Account created successfully! Please log in.");
       navigate("/signin");
     } catch (error) {

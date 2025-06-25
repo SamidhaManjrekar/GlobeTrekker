@@ -107,7 +107,6 @@ const Posts = () => {
   const handleLike = async () => {
     try {
       const res = await api.post(`/api/like/${id}/`);
-      console.log(res.data);
       setLiked(res.data.liked);
       setLikeCount(res.data.likes_count);
     } catch (error) {

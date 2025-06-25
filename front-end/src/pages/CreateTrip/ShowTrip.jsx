@@ -63,7 +63,6 @@ const ShowTrip = () => {
             try {
               const imageResponse = await getImage(destinationForImage);
               imageUrl = imageResponse?.url;
-              console.log("Generated Image URL:", imageUrl);
             } catch (imageError) {
               console.warn("Failed to generate image:", imageError);
               imageUrl =
