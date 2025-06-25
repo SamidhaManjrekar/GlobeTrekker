@@ -1,14 +1,14 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status 
 from .models import Expense, Report
 from itinerary.models import Itinerary
 from .serializers import ExpenseSerializer, ReportSerializer
 from django.shortcuts import get_object_or_404
 from agent.expense_agent import generate_spending_report
+import json 
 
-# Create your views here.
 class ExpenseListCreateView(generics.ListCreateAPIView):
     serializer_class = ExpenseSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -37,15 +37,15 @@ class GenerateReportView(APIView):
 
     def post(self, request, itinerary_id):
         itinerary = get_object_or_404(Itinerary, id=itinerary_id, user=request.user)
-
-        report_data = generate_spending_report(itinerary_id)
+        generated_report_json_string = generate_spending_report(itinerary_id)
+        generated_report_dict = json.loads(generated_report_json_string)
         report, created = Report.objects.update_or_create(
             itinerary=itinerary,
-            defaults={"breakdown": report_data}
+            defaults={"breakdown": generated_report_dict} 
         )
 
         serializer = ReportSerializer(report)
-        return Response(serializer.data, status=201 if created else 200)
+        return Response(serializer.data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
     
 class RetrieveReportView(generics.RetrieveAPIView):
     serializer_class = ReportSerializer
