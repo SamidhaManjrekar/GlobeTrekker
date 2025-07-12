@@ -34,7 +34,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     'globetrekker-backend-api.onrender.com',
-    'globetrekker-q2fj.onrender.com',
+    'globetrekker-frj3.onrender.com',
 ]
 
 
@@ -159,7 +159,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = False 
 CORS_ALLOWED_ORIGINS = [
-    'https://globetrekker-q2fj.onrender.com',
+    'https://globetrekker-frj3.onrender.com',
     'https://globetrekker-backend-api.onrender.com', 
     'https://itinerary-generator.onrender.com',
 ]
