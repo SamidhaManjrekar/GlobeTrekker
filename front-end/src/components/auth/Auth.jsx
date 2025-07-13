@@ -23,6 +23,7 @@ const Auth = ({
   footerText,
   footerButton,
   footerLink,
+  loading,
 }) => {
   const {
     register,
@@ -69,8 +70,13 @@ const Auth = ({
             ))}
           </CardContent>
           <CardFooter className="flex flex-col space-y-2">
-            <Button variant="gold" className="w-full" type="submit">
-              {buttonText}
+            <Button
+              variant="gold"
+              className="w-full"
+              type="submit"
+              disabled={loading} 
+            >
+              {loading ? "Processing..." : buttonText}
             </Button>
             <div className="flex items-center justify-center">
               {footerText && (

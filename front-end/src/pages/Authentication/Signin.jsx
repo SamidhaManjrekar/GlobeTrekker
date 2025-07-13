@@ -1,6 +1,6 @@
 import Auth from "../../components/auth/Auth";
 import { z } from "zod";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "@/constants/access";
 import api from "@/api/interceptor";
@@ -11,12 +11,15 @@ import { setUser } from "@/redux/userSlice";
 const Signin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();  
+  const [loading, setLoading] = useState(false); 
 
   const handleLogin = async (data) => {
+    setLoading(true);
     try {
       const res = await api.post("/api/signin/", data);
       localStorage.setItem(ACCESS_TOKEN, res.data.access);
       localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+
       const createTrip = localStorage.getItem("CreateTrip");
       if (createTrip && createTrip.length > 0) {
         const tripData = JSON.parse(createTrip);
@@ -25,12 +28,15 @@ const Signin = () => {
       } else {
         navigate("/home");
       }
+
       const userInfo = await api.get("/api/users/me/");
       dispatch(setUser(userInfo.data)); 
       toast.success("Login successful! Welcome back.");
     } catch (error) {
       console.error("Login failed:", error);
       toast.error("Login failed! Please check your credentials.");
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -69,6 +75,7 @@ const Signin = () => {
       footerText="Don't have an account?"
       footerButton="Signup"
       footerLink="/signup"
+      loading={loading} 
     />
   );
 };
