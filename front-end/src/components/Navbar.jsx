@@ -57,7 +57,7 @@ export const Navbar = () => {
                     <DropdownMenu>
                       <DropdownMenuTrigger>
                         <Avatar className="bg-gold flex justify-center items-center uppercase">
-                          {userInfo.first_name[0] || "Guest"}
+                          {userInfo?.first_name?.[0] || "G"}
                         </Avatar>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>

@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 
 const BudgetReport = ({ id }) => {
   const [budgetData, setBudgetData] = useState(null);
+  const [error, setError] = useState(null);
   const [percentage, setPercentage] = useState(true);
   const GOLD_COLOR = "hsl(51, 90%, 44%)";
   const GOLD_VARIANTS = [
@@ -47,10 +48,13 @@ const BudgetReport = ({ id }) => {
                 : res.data.breakdown,
           };
           setBudgetData(parsedData);
+        } else {
+          setError("No budget report found.");
         }
         
       } catch (error) {
         console.error("Error fetching budget report:", error);
+        setError("Failed to load budget report.");
       }
     };
 
@@ -58,10 +62,11 @@ const BudgetReport = ({ id }) => {
   }, [id]);
 
   const handleClick = () => setPercentage((prev) => !prev);
-
-  const handleDownload = () => {
-    window.print();
-  };
+  const handleDownload = () => window.print();
+  
+  if (error) {
+    return <div className="p-6 text-red-500 text-center">{error}</div>;
+  }
 
   if (!budgetData || !budgetData.breakdown) {
     return <div className="p-6 text-white text-center">Loading...</div>;
@@ -87,10 +92,7 @@ const BudgetReport = ({ id }) => {
   const allDates = getDatesInRange(breakdown.start_date, breakdown.end_date);
   const daysPlanned = allDates.length;
   const categoryData = Object.entries(breakdown.category_breakdown).map(
-    ([name, value]) => ({
-      name,
-      value,
-    })
+    ([name, value]) => ({ name, value })
   );
 
   const dailySpendingData = allDates
@@ -106,19 +108,14 @@ const BudgetReport = ({ id }) => {
 
       const amount = breakdown.day_wise_breakdown[date] || 0;
 
-      return {
-        date: formattedDate,
-        fullDate: date,
-        percentage,
-        amount,
-      };
+      return { date: formattedDate, fullDate: date, percentage, amount };
     })
     .sort((a, b) => new Date(a.fullDate) - new Date(b.fullDate));
 
   const prepareCategoryTrendData = (trendData) => {
-    const categoryTemplate = {};
-    Object.keys(trendData).forEach((category) => {
-      categoryTemplate[category] = 0;
+    const template = {};
+    Object.keys(trendData).forEach((cat) => {
+      template[cat] = 0;
     });
 
     return allDates
@@ -129,12 +126,12 @@ const BudgetReport = ({ id }) => {
             day: "numeric",
           }),
           fullDate: date,
-          ...categoryTemplate,
+          ...template,
         };
 
-        Object.entries(trendData).forEach(([category, values]) => {
+        Object.entries(trendData).forEach(([cat, values]) => {
           if (values[date] !== undefined) {
-            dataPoint[category] = values[date];
+            dataPoint[cat] = values[date];
           }
         });
 
