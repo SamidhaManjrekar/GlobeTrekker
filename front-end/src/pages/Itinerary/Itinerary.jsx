@@ -100,17 +100,17 @@ const Itinerary = () => {
       <div className="p-8 sm:p-12 bg-black text-white rounded-lg shadow-lg">
         <div className="flex flex-col lg:flex-row justify-between items-center gap-8 max-w-7xl mx-auto">
           <div className="text-center lg:text-left flex-grow">
-            <h2 className="font-medium text-2xl sm:text-3xl mb-4">
+            <h2 className="text-center mt-7 font-light mb-5 text-3xl">
               Plan More Adventures Now
             </h2>
             <p className="text-lg mb-8">
               Whether you're seeking adventure, relaxation, or a custom getaway,
               we tailor your trip to fit your unique desires.
             </p>
-            <Link to="/create-trip">
+            <Link to="/create-trip" className="inline-block">
               <Button
                 variant="gold"
-                className="px-6 py-3 flex items-center gap-2"
+                className="px-6 py-3 flex items-center gap-2 mx-auto"
               >
                 <span>Design Your Escape</span>
                 <ArrowRightIcon className="h-5 w-5 transition duration-300 ease-in-out group-hover:translate-x-1" />
