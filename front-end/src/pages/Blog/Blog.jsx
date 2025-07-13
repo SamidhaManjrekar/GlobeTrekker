@@ -74,7 +74,7 @@ const Blog = () => {
   return (
     <div className="p-16 mt-8 sm:px-16 lg:px-20">
       <Navbar />
-      <h2 className="text-center font-montserrat text-4xl font-medium mb-10">
+      <h2 className="text-center font-montserrat text-3xl sm:text-4xl font-medium mb-8 sm:mb-10">
         Start Your Journey Through Ideas
       </h2>
 

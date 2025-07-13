@@ -97,7 +97,7 @@ const Itinerary = () => {
         Your Adventures
       </h1>
 
-      <div className="p-8 sm:p-12 bg-black text-white rounded-lg shadow-lg">
+      <div className="p-8 pt-0 lg:pt-8 sm:p-12 bg-black text-white rounded-lg shadow-lg">
         <div className="flex flex-col lg:flex-row justify-between items-center gap-8 max-w-7xl mx-auto">
           <div className="text-center lg:text-left flex-grow">
             <h2 className="text-center mt-7 font-light mb-5 text-3xl">
